@@ -12,8 +12,7 @@ Content/*
 .tmp.driveupload/
 
 # exceptions
-!Content/CSTutorial/Blueprints
-!Content/CSTutorial/UserInterface
+!Content/CSTutorial
 
 
 # file types
