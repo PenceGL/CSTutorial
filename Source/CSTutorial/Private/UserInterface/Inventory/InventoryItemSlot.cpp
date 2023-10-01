@@ -49,17 +49,16 @@ void UInventoryItemSlot::NativeConstruct()
 		default: ;
 		}
 
-		// ItemIcon->SetBrushFromTexture(ItemReference->AssetData.Icon);
-		//
-		// if (ItemReference->NumericData.bIsStackable)
-		// {
-		// 	ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity));
-		// }
-		// else
-		// {
-		// 	ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
-		// }
-		ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
+		ItemIcon->SetBrushFromTexture(ItemReference->AssetData.Icon);
+
+		if (ItemReference->NumericData.bIsStackable)
+		{
+			ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity));
+		}
+		else
+		{
+			ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
+		}
 	}
 }
 
@@ -96,7 +95,7 @@ void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const
 		ItemReference->NumericData.bIsStackable
 			? DragVisual->ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity))
 			: DragVisual->ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
-		
+
 		UItemDragDropOperation* DragItemOperation = NewObject<UItemDragDropOperation>();
 		DragItemOperation->SourceItem = ItemReference;
 		DragItemOperation->SourceInventory = ItemReference->OwningInventory;

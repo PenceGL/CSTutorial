@@ -22,11 +22,8 @@ public:
 	UFUNCTION()
 	void RefreshInventory();
 
-	// UPROPERTY(meta=(BindWidget))
-	// UWrapBox* InventoryWrapBox;
-
 	UPROPERTY(meta=(BindWidget))
-	UGridPanel* TestGridPanel;
+	UWrapBox* InventoryWrapBox;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* WeightInfo;

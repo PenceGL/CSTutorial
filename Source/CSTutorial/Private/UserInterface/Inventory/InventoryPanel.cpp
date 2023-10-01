@@ -22,17 +22,6 @@ void UInventoryPanel::NativeOnInitialized()
 		{
 			InventoryReference->OnInventoryUpdated.AddUObject(this, &UInventoryPanel::RefreshInventory);
 			SetInfoText();
-
-			if (InventorySlotClass)
-			{
-				for (int32 i = 0; i < InventoryReference->GetSlotsCapacity(); ++i)
-				{
-					UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this, InventorySlotClass);
-					ItemSlot->SetItemReference(nullptr);
-					
-					TestGridPanel->AddChildToGrid(ItemSlot, i/5, i % 5);
-				}
-			}
 		}
 	}
 }
@@ -55,20 +44,20 @@ void UInventoryPanel::SetInfoText() const
 
 void UInventoryPanel::RefreshInventory()
 {
-	// if (InventoryReference && InventorySlotClass)
-	// {
-	// 	InventoryWrapBox->ClearChildren();
-	//
-	// 	for (UItemBase* const& InventoryItem : InventoryReference->GetInventoryContents())
-	// 	{
-	// 		UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this, InventorySlotClass);
-	// 		ItemSlot->SetItemReference(InventoryItem);
-	//
-	// 		InventoryWrapBox->AddChildToWrapBox(ItemSlot);
-	// 	}
-	//
-	// 	SetInfoText();
-	// }
+	if (InventoryReference && InventorySlotClass)
+	{
+		InventoryWrapBox->ClearChildren();
+	
+		for (UItemBase* const& InventoryItem : InventoryReference->GetInventoryContents())
+		{
+			UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this, InventorySlotClass);
+			ItemSlot->SetItemReference(InventoryItem);
+	
+			InventoryWrapBox->AddChildToWrapBox(ItemSlot);
+		}
+	
+		SetInfoText();
+	}
 }
 
 bool UInventoryPanel::NativeOnDrop(const FGeometry& InGeometry,
