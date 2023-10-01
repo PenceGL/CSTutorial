@@ -6,14 +6,16 @@ Saved/
 Script/
 Plugins/
 Build/
-Content/
+Content/*
 .idea/
 .vs/
 .tmp.driveupload/
 
+# exceptions
+!Content/CSTutorial/Blueprints
+!Content/CSTutorial/UserInterface
+
+
 # file types
 *.sln
 *.vsconfig
-
-#exceptions
-!Content/CSTutorial
