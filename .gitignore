@@ -1,0 +1,16 @@
+# directories
+Intermediate/
+DerivedDataCache/
+Binaries/
+Saved/
+Script/
+Plugins/
+Build/
+Content/
+.idea/
+.vs/
+.tmp.driveupload/
+
+# file types
+*.sln
+*.vsconfig
