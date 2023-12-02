@@ -35,6 +35,7 @@ void AInterfaceTestActor::BeginFocus()
 	{
 		Mesh->SetRenderCustomDepth(true);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Calling BeginFocus override on interface test actor."));
 }
 
 void AInterfaceTestActor::EndFocus()
@@ -43,6 +44,7 @@ void AInterfaceTestActor::EndFocus()
 	{
 		Mesh->SetRenderCustomDepth(false);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Calling EndFocus override on interface test actor."));
 }
 
 void AInterfaceTestActor::BeginInteract()

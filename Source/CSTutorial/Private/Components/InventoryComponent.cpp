@@ -269,7 +269,7 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 				InputItem->TextData.Name));
 		}
 	}
-
+	
 	check(false);
 	return FItemAddResult::AddedNone(FText::FromString("TryAddItem fallthrough error. GetOwner() check somehow failed."));
 }

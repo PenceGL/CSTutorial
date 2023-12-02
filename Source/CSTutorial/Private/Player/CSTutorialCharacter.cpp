@@ -99,7 +99,7 @@ void ACSTutorialCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 void ACSTutorialCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// HUD = Cast<ACSTutorialHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	MainPlayerController = Cast<ACSTutorialPlayerController>(GetController());
 	HUD = Cast<ACSTutorialHUD>(MainPlayerController->GetHUD());
@@ -143,7 +143,7 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 		InteractionCheckDistance = 250.0f;
 		TraceStart = FollowCamera->GetComponentLocation();
 	}
-	
+
 	FVector TraceEnd{TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance)};
 
 	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector());
@@ -151,7 +151,7 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 	if (LookDirection > 0)
 	{
 		// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
-		
+
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
 		FHitResult TraceHit;
@@ -210,6 +210,7 @@ void ACSTutorialCharacter::NoInteractableFound()
 		if (IsValid(TargetInteractable.GetObject()))
 		{
 			TargetInteractable->EndFocus();
+			EndInteract();
 		}
 
 		HUD->HideInteractionWidget();
@@ -237,10 +238,10 @@ void ACSTutorialCharacter::BeginInteract()
 			else
 			{
 				GetWorldTimerManager().SetTimer(TimerHandle_Interaction,
-					this,
-					&ACSTutorialCharacter::Interact,
-					TargetInteractable->InteractableData.InteractionDuration,
-					false);
+				                                this,
+				                                &ACSTutorialCharacter::Interact,
+				                                TargetInteractable->InteractableData.InteractionDuration,
+				                                false);
 			}
 		}
 	}
@@ -339,11 +340,11 @@ void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityT
 
 		const FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 50.0f)};
 		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-		
+
 		const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
 
 		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
-		
+
 		Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
 	}
 	else
