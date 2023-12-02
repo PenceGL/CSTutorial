@@ -20,9 +20,9 @@ void APickup::BeginPlay()
 
 void APickup::InitializePickup(const int32 InQuantity)
 {
-	if (ItemDataTable && !DesiredItemID.IsNone())
+	if (!ItemRowHandle.IsNull())
 	{
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+		const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(ItemRowHandle.RowName.ToString());
 
 		ItemReference = NewObject<UItemBase>(this, UItemBase::StaticClass());
 
@@ -45,7 +45,7 @@ void APickup::InitializePickup(const int32 InQuantity)
 void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
 {
 	ItemReference = ItemToDrop;
-	
+
 	InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 	ItemReference->NumericData.Weight = ItemToDrop->GetItemSingleWeight();
 	ItemReference->OwningInventory = nullptr;
@@ -131,15 +131,13 @@ void APickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
 	const FName ChangedPropertyName = PropertyChangedEvent.Property ? PropertyChangedEvent.Property->GetFName() : NAME_None;
-
-	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(APickup, DesiredItemID))
+	
+	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(FDataTableRowHandle, RowName))
 	{
-		if (ItemDataTable)
+		if (!ItemRowHandle.IsNull())
 		{
-			if (const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString()))
-			{
-				PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
-			}
+			const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(ItemRowHandle.RowName.ToString());
+			PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
 		}
 	}
 }

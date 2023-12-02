@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Engine/DataTable.h"
 #include "Interfaces/InteractionInterface.h"
 #include "Player/CSTutorialCharacter.h"
 #include "Pickup.generated.h"
@@ -15,13 +15,13 @@ UCLASS()
 class CSTUTORIAL_API APickup : public AActor, public IInteractionInterface
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	//======================================================================================
 	// PROPERTIES & VARIABLES
 	//======================================================================================
 
-	
+
 	//======================================================================================
 	// FUNCTIONS
 	//======================================================================================
@@ -43,29 +43,26 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
 	UStaticMeshComponent* PickupMesh;
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
-	UDataTable* ItemDataTable;
-
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
-	FName DesiredItemID;
-
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
 	UItemBase* ItemReference;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Pickup | Interaction Data")
+	FInteractableData InstanceInteractableData;
 
 	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
 	int32 ItemQuantity;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "Pickup | Interaction")
-	FInteractableData InstanceInteractableData;
-	
+	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
+	FDataTableRowHandle ItemRowHandle;
+
 	//======================================================================================
 	// FUNCTIONS
 	//======================================================================================
 	virtual void BeginPlay() override;
-	
+
 	virtual void Interact(ACSTutorialCharacter* PlayerCharacter) override;
 	void UpdateInteractableData();
-	
+
 	void TakePickup(const ACSTutorialCharacter* Taker);
 
 #if WITH_EDITOR
