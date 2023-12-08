@@ -2,6 +2,8 @@
 #include "Player/CSTutorialCharacter.h"
 #include "UserInterface/CSTutorialHUD.h"
 #include "Components/InventoryComponent.h"
+#include "Player/CSTutorialPlayerController.h"
+#include "Interfaces/InteractionInterface.h"
 #include "World/Pickup.h"
 
 // engine
@@ -9,12 +11,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Camera/CameraComponent.h"
 
 #include "DrawDebugHelpers.h"
-#include "Components/TimelineComponent.h"
-#include "Player/CSTutorialPlayerController.h"
-
 
 ACSTutorialCharacter::ACSTutorialCharacter()
 {

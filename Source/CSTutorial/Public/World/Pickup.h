@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Interfaces/InteractionInterface.h"
-#include "Player/CSTutorialCharacter.h"
 #include "Pickup.generated.h"
 
 class UDataTable;

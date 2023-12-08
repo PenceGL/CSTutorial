@@ -7,9 +7,7 @@
 #include "MainMenu.generated.h"
 
 class ACSTutorialCharacter;
-/**
- * 
- */
+
 UCLASS()
 class CSTUTORIAL_API UMainMenu : public UUserWidget
 {

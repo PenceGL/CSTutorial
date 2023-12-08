@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Interfaces/InteractionInterface.h"
 #include "CSTutorialCharacter.generated.h"
 
 class ACSTutorialPlayerController;
@@ -12,6 +11,7 @@ class UTimelineComponent;
 class UInventoryComponent;
 class ACSTutorialHUD;
 class UItemBase;
+class IInteractionInterface;
 
 USTRUCT()
 struct FInteractionData
