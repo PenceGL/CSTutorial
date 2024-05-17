@@ -16,7 +16,8 @@ public class CSTutorial : ModuleRules
 			"InputCore",
 			"SlateCore",
 			"Slate",
-			"UMG"
+			"UMG",
+			"EnhancedInput"
 		});
 	}
 }

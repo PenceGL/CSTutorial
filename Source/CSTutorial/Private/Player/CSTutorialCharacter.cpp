@@ -13,6 +13,8 @@
 #include "Components/InputComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Camera/CameraComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 #include "DrawDebugHelpers.h"
 
@@ -70,39 +72,31 @@ ACSTutorialCharacter::ACSTutorialCharacter()
 	BaseEyeHeight = 76.0f;
 }
 
-void ACSTutorialCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void ACSTutorialCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ACSTutorialCharacter::BeginInteract);
-	PlayerInputComponent->BindAction("Interact", IE_Released, this, &ACSTutorialCharacter::EndInteract);
-
-	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ACSTutorialCharacter::Aim);
-	PlayerInputComponent->BindAction("Aim", IE_Released, this, &ACSTutorialCharacter::StopAiming);
-
-	PlayerInputComponent->BindAction("ToggleMenu", IE_Pressed, this, &ACSTutorialCharacter::ToggleMenu);
-
-	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ACSTutorialCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("Move Right / Left", this, &ACSTutorialCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turn at rate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &ACSTutorialCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &ACSTutorialCharacter::LookUpAtRate);
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACSTutorialCharacter::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACSTutorialCharacter::Look);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	}
 }
 
 void ACSTutorialCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// HUD = Cast<ACSTutorialHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	
 	MainPlayerController = Cast<ACSTutorialPlayerController>(GetController());
 	HUD = Cast<ACSTutorialHUD>(MainPlayerController->GetHUD());
+
+	if (MainPlayerController)
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MainPlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 
 	FOnTimelineFloat AimLerpAlphaValue;
 	FOnTimelineEvent TimelineFinishedEvent;
@@ -353,32 +347,24 @@ void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityT
 	}
 }
 
-void ACSTutorialCharacter::TurnAtRate(float Rate)
+void ACSTutorialCharacter::Move(const FInputActionValue& Value)
 {
-	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
+	const FVector2D MovementVector = Value.Get<FVector2d>();
+
+	const FRotator Rotation = GetControlRotation();
+	const FRotator YawRotation{0, Rotation.Yaw, 0};
+
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	AddMovementInput(ForwardDirection, MovementVector.Y);
+	AddMovementInput(RightDirection, MovementVector.X);
 }
 
-void ACSTutorialCharacter::LookUpAtRate(float Rate)
+void ACSTutorialCharacter::Look(const FInputActionValue& Value)
 {
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
-}
+	const FVector2D LookAxisVector = Value.Get<FVector2d>();
 
-void ACSTutorialCharacter::MoveForward(float Value)
-{
-	if ((Controller != nullptr) && (Value != 0.0f))
-	{
-		const FVector Direction = FRotationMatrix(FRotator{0.0, GetControlRotation().Yaw, 0.0}).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
-	}
-}
-
-void ACSTutorialCharacter::MoveRight(float Value)
-{
-	if ((Controller != nullptr) && (Value != 0.0f))
-	{
-		const FVector Direction = FRotationMatrix(FRotator{0.0, GetControlRotation().Yaw, 0.0}).GetUnitAxis(EAxis::Y);
-		AddMovementInput(Direction, Value);
-	}
+	AddControllerYawInput(LookAxisVector.X);
+	AddControllerPitchInput(LookAxisVector.Y);
 }

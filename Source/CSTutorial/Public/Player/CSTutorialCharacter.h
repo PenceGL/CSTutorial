@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
 #include "CSTutorialCharacter.generated.h"
 
 class ACSTutorialPlayerController;
@@ -12,6 +13,8 @@ class UInventoryComponent;
 class ACSTutorialHUD;
 class UItemBase;
 class IInteractionInterface;
+class UInputMappingContext;
+class UInputAction;
 
 USTRUCT()
 struct FInteractionData
@@ -104,6 +107,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Character | Aim Timeline")
 	UCurveFloat* AimingCameraCurve;
 
+	// INPUT MAPPING
+	//--------------------------------------------------------------------
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* MoveAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* JumpAction;
+
 #pragma endregion
 	//======================================================================================
 	// FUNCTIONS
@@ -132,9 +149,7 @@ protected:
 	void EndInteract();
 	void Interact();
 
-	void MoveForward(float Value);
-	void MoveRight(float Value);
-	void TurnAtRate(float Rate);
-	void LookUpAtRate(float Rate);
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
 #pragma endregion
 };
