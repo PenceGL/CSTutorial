@@ -1,6 +1,8 @@
 ## Core Systems Tutorial Repository
 
-This is the code repository for the Core Systems (Items, Interaction, and Inventory) video tutorial series for Unreal Engine 5 C++.  The series playlist can be found at the following link:  
+This is the code repository for the Core Systems (Items, Interaction, and Inventory) video tutorial series for Unreal Engine 5 C++.  
+
+The series playlist can be found at the following link:  
 https://www.youtube.com/watch?v=cPgtd4m5-EI&list=PLitYOdh3OOzhJBCRqYZEGBzJYemA-SH8Z
 
 Any assets such as blueprints, data tables, etc. created specifically for the project 
