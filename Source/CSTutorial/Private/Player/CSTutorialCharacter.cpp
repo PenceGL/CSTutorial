@@ -80,19 +80,28 @@ void ACSTutorialCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACSTutorialCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ACSTutorialCharacter::BeginInteract);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Completed, this, &ACSTutorialCharacter::EndInteract);
+
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ACSTutorialCharacter::Aim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ACSTutorialCharacter::StopAiming);
+
+		EnhancedInputComponent->BindAction(ToggleMenuAction, ETriggerEvent::Started, this, &ACSTutorialCharacter::ToggleMenu);
 	}
 }
 
 void ACSTutorialCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	MainPlayerController = Cast<ACSTutorialPlayerController>(GetController());
 	HUD = Cast<ACSTutorialHUD>(MainPlayerController->GetHUD());
 
 	if (MainPlayerController)
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MainPlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+			MainPlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
@@ -125,7 +134,7 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
 
-	FVector TraceStart{FVector::ZeroVector};
+	FVector TraceStart;
 
 	if (!bAiming)
 	{

@@ -7,6 +7,8 @@
 #include "Interfaces/InteractionInterface.h"
 #include "InterfaceTestActor.generated.h"
 
+class ACSTutorialCharacter;
+
 UCLASS()
 class CSTUTORIAL_API AInterfaceTestActor : public AActor, public IInteractionInterface
 {
@@ -18,7 +20,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Test Actor")
-	UStaticMeshComponent* Mesh;
+	TObjectPtr<UStaticMeshComponent> Mesh;
 
 	UPROPERTY(EditInstanceOnly, Category = "Test Actor")
 	FInteractableData InstanceInteractableData;

@@ -15,7 +15,7 @@ class CSTUTORIAL_API UMainMenu : public UUserWidget
 
 public:
 	UPROPERTY()
-	ACSTutorialCharacter* PlayerCharacter;
+	TObjectPtr<ACSTutorialCharacter> PlayerCharacter;
 
 protected:
 	virtual void NativeOnInitialized() override;

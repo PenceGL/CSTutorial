@@ -32,16 +32,16 @@ protected:
 	TSubclassOf<UInventoryTooltip> ToolTipClass;
 	
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot")
-	UItemBase* ItemReference;
+	TObjectPtr<UItemBase> ItemReference;
 
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
-	UBorder* ItemBorder;
+	TObjectPtr<UBorder> ItemBorder;
 
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
-	UImage* ItemIcon;
+	TObjectPtr<UImage> ItemIcon;
 
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
-	UTextBlock* ItemQuantity;
+	TObjectPtr<UTextBlock> ItemQuantity;
 
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;

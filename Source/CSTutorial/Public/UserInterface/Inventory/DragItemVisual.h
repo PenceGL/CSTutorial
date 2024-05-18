@@ -21,11 +21,11 @@ class CSTUTORIAL_API UDragItemVisual : public UUserWidget
 public:
 
 	UPROPERTY(VisibleAnywhere, Category="Drag Item Visual", meta=(BindWidget))
-	UBorder* ItemBorder;
+	TObjectPtr<UBorder> ItemBorder;
 
 	UPROPERTY(VisibleAnywhere, Category="Drag Item Visual", meta=(BindWidget))
-	UImage* ItemIcon;
+	TObjectPtr<UImage> ItemIcon;
 
 	UPROPERTY(VisibleAnywhere, Category="Drag Item Visual", meta=(BindWidget))
-	UTextBlock* ItemQuantity;
+	TObjectPtr<UTextBlock> ItemQuantity;
 };

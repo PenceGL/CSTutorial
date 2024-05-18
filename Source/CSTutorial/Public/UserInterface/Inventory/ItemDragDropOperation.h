@@ -18,8 +18,8 @@ class CSTUTORIAL_API UItemDragDropOperation : public UDragDropOperation
 	
 public:
 	UPROPERTY()
-	UItemBase* SourceItem;
+	TObjectPtr<UItemBase> SourceItem;
 
 	UPROPERTY()
-	UInventoryComponent* SourceInventory;
+	TObjectPtr<UInventoryComponent> SourceInventory;
 };

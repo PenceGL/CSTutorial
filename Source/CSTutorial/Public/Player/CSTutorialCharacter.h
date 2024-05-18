@@ -28,7 +28,7 @@ struct FInteractionData
 	};
 
 	UPROPERTY()
-	AActor* CurrentInteractable;
+	TObjectPtr<AActor> CurrentInteractable;
 
 	UPROPERTY()
 	float LastInteractionCheckTime;
@@ -70,25 +70,25 @@ protected:
 	//======================================================================================
 #pragma region protected_variables
 	UPROPERTY()
-	ACSTutorialHUD* HUD;
-	
+	TObjectPtr<ACSTutorialHUD> HUD;
+
 	UPROPERTY()
-	ACSTutorialPlayerController* MainPlayerController;
+	TObjectPtr<ACSTutorialPlayerController> MainPlayerController;
 
 	UPROPERTY(VisibleAnywhere, Category=Input)
 	float TurnRateGamepad;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
+	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
+	TObjectPtr<UCameraComponent> FollowCamera;
 
 	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")
 	TScriptInterface<IInteractionInterface> TargetInteractable;
 
 	UPROPERTY(VisibleAnywhere, Category= "Character | Inventory")
-	UInventoryComponent* PlayerInventory;
+	TObjectPtr<UInventoryComponent> PlayerInventory;
 
 	// interaction properties
 	float InteractionCheckFrequency;
@@ -105,21 +105,30 @@ protected:
 	TObjectPtr<UTimelineComponent> AimingCameraTimeline;
 
 	UPROPERTY(EditDefaultsOnly, Category="Character | Aim Timeline")
-	UCurveFloat* AimingCameraCurve;
+	TObjectPtr<UCurveFloat> AimingCameraCurve;
 
 	// INPUT MAPPING
 	//--------------------------------------------------------------------
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputMappingContext* DefaultMappingContext;
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* MoveAction;
+	TObjectPtr<UInputAction> MoveAction;
 
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* LookAction;
+	TObjectPtr<UInputAction> LookAction;
 
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* JumpAction;
+	TObjectPtr<UInputAction> JumpAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> InteractAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> AimAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> ToggleMenuAction;
 
 #pragma endregion
 	//======================================================================================

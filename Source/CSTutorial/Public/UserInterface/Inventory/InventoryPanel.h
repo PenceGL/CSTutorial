@@ -23,18 +23,18 @@ public:
 	void RefreshInventory();
 
 	UPROPERTY(meta=(BindWidget))
-	UWrapBox* InventoryWrapBox;
+	TObjectPtr<UWrapBox> InventoryWrapBox;
 	
 	UPROPERTY(meta=(BindWidget))
-	UTextBlock* WeightInfo;
+	TObjectPtr<UTextBlock> WeightInfo;
 	
 	UPROPERTY(meta=(BindWidget))
-	UTextBlock* CapacityInfo;
+	TObjectPtr<UTextBlock> CapacityInfo;
 
 	UPROPERTY()
-	ACSTutorialCharacter* PlayerCharacter;
+	TObjectPtr<ACSTutorialCharacter> PlayerCharacter;
 	UPROPERTY()
-	UInventoryComponent* InventoryReference;
+	TObjectPtr<UInventoryComponent> InventoryReference;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventoryItemSlot> InventorySlotClass;

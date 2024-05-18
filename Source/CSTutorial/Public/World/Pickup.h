@@ -43,7 +43,7 @@ protected:
 	UStaticMeshComponent* PickupMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
-	UItemBase* ItemReference;
+	TObjectPtr<UItemBase> ItemReference;
 
 	UPROPERTY(VisibleInstanceOnly, Category = "Pickup | Interaction Data")
 	FInteractableData InstanceInteractableData;

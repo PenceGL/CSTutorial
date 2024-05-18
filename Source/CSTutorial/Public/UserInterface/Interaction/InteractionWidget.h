@@ -24,19 +24,19 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = "Interaction Widget | Interactable Data")
-	UTextBlock* NameText;
+	TObjectPtr<UTextBlock> NameText;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = "Interaction Widget | Interactable Data")
-	UTextBlock* ActionText;
+	TObjectPtr<UTextBlock> ActionText;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = "Interaction Widget | Interactable Data")
-	UTextBlock* QuantityText;
+	TObjectPtr<UTextBlock> QuantityText;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = "Interaction Widget | Interactable Data")
-	UTextBlock* KeyPressText;
+	TObjectPtr<UTextBlock> KeyPressText;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = "Interaction Widget | Interactable Data")
-	UProgressBar* InteractionProgressBar;
+	TObjectPtr<UProgressBar> InteractionProgressBar;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = "Interaction Widget | Interactable Data")
 	float CurrentInteractionDuration;

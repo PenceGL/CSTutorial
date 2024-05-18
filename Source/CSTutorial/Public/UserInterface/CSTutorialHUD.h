@@ -51,13 +51,13 @@ protected:
 	// PROPERTIES & VARIABLES
 	//======================================================================================
 	UPROPERTY()
-	UMainMenu* MainMenuWidget;
+	TObjectPtr<UMainMenu> MainMenuWidget;
 
 	UPROPERTY()
-	UInteractionWidget* InteractionWidget;
+	TObjectPtr<UInteractionWidget> InteractionWidget;
 
 	UPROPERTY()
-	UUserWidget* CrosshairWidget;
+	TObjectPtr<UUserWidget> CrosshairWidget;
 	
 	//======================================================================================
 	// FUNCTIONS

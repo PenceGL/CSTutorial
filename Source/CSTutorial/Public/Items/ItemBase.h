@@ -19,7 +19,7 @@ public:
 	// PROPERTIES & VARIABLES
 	//======================================================================================
 	UPROPERTY()
-	UInventoryComponent* OwningInventory;
+	TObjectPtr<UInventoryComponent> OwningInventory;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FName ID;
