@@ -1,4 +1,3 @@
-
 // game
 #include "UserInterface/Inventory/InventoryItemSlot.h"
 #include "Items/ItemBase.h"

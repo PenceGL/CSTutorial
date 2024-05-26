@@ -1,6 +1,4 @@
-
 #include "Interfaces/InteractionInterface.h"
-#include "Player/CSTutorialCharacter.h"
 
 // Add default functionality here for any IInteractionInterface functions that are not pure virtual.
 void IInteractionInterface::BeginFocus()
