@@ -75,13 +75,10 @@ protected:
 	UPROPERTY()
 	TObjectPtr<ACSTutorialPlayerController> MainPlayerController;
 
-	UPROPERTY(VisibleAnywhere, Category=Input)
-	float TurnRateGamepad;
-
-	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")
