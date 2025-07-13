@@ -19,24 +19,6 @@ class IInteractionInterface;
 class UInputMappingContext;
 struct FInputActionValue;
 
-USTRUCT()
-struct FInteractionData
-{
-	GENERATED_USTRUCT_BODY()
-
-	FInteractionData() :
-		CurrentInteractable(nullptr),
-		LastInteractionCheckTime(0.0f)
-	{
-	};
-
-	UPROPERTY()
-	TObjectPtr<AActor> CurrentInteractable;
-
-	UPROPERTY()
-	float LastInteractionCheckTime;
-};
-
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 /**
@@ -62,19 +44,19 @@ public:
 	ACSTutorialCharacter();
 	
 	/** Handles move inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
 	virtual void DoMove(float Right, float Forward);
 	
 	/** Handles look inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
 	virtual void DoLook(float Yaw, float Pitch);
 
 	/** Handles jump pressed inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
 	virtual void DoJumpStart();
 
 	/** Handles jump pressed inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
 	virtual void DoJumpEnd();
 
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -82,7 +64,7 @@ public:
 
 	// CSTutorial game functions
 	//---------------------------------------------------------
-	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TH_TimedInteraction); };
+	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TH_TimedInteraction); }
 
 	FORCEINLINE UInventoryComponent* GetInventory() const { return PlayerInventory; };
 
@@ -106,71 +88,87 @@ protected:
 	UCameraComponent* FollowCamera;
 	
 	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="PlayerCharacter | Input")
 	UInputAction* JumpAction;
 
 	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="PlayerCharacter | Input")
 	UInputAction* MoveAction;
 
 	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="PlayerCharacter | Input")
 	UInputAction* LookAction;
 
 	/** Mouse Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="PlayerCharacter | Input")
 	UInputAction* MouseLookAction;
 	
-	// CSTutorial game properties
+	// CSTutorial miscellaneous game properties
 	//---------------------------------------------------------
 	UPROPERTY()
 	TObjectPtr<ACSTutorialHUD> HUD;
 	
 	UPROPERTY()
 	TObjectPtr<ACSTutorialPlayerController> MainPlayerController;
-	
-	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")
-	TScriptInterface<IInteractionInterface> TargetInteractable;
 
-	UPROPERTY(VisibleAnywhere, Category= "Character | Inventory")
+	UPROPERTY(VisibleAnywhere, Category= "PlayerCharacter | Inventory")
 	TObjectPtr<UInventoryComponent> PlayerInventory;
 
 	// input mapping properties
 	//---------------------------------------------------------
-	UPROPERTY(EditAnywhere, Category="Input")
+	UPROPERTY(EditAnywhere, Category="PlayerCharacter | Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-	UPROPERTY(EditAnywhere, Category="Input")
+	UPROPERTY(EditAnywhere, Category="PlayerCharacter | Input")
 	TObjectPtr<UInputAction> InteractAction;
 
-	UPROPERTY(EditAnywhere, Category="Input")
+	UPROPERTY(EditAnywhere, Category="PlayerCharacter | Input")
 	TObjectPtr<UInputAction> AimAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerCharacter | Input")
 	TObjectPtr<UInputAction> ToggleMenuAction;
 	
 	// interaction properties
 	//---------------------------------------------------------
+	UPROPERTY(EditAnywhere, Category = "PlayerCharacter | Interaction")
 	float InteractionCheckFrequency;
-	float InteractionCheckDistance;
+
+	/** @brief Used to set the maximum distance at which actors can be interacted with while aiming.*/
+	UPROPERTY(EditAnywhere, Category = "PlayerCharacter | Interaction")
+	float AimingInteractionDistance;
+	
+	/** @brief Used to set the maximum distance at which actors can be interacted with while not aiming.*/
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerCharacter | Interaction")
+	float DefaultInteractionDistance;
+
+	UPROPERTY(VisibleAnywhere, Category = "PlayerCharacter | Interaction")
+	TScriptInterface<IInteractionInterface> InteractionTarget;
+
+	FCollisionQueryParams InteractionCollisionQueryParams;
+	FCollisionObjectQueryParams InteractionObjectQueryParams;
+	// array that will be reused for storing any detected interactables
+	TArray<FHitResult> OutHits;
+	
 	/** @brief Timer handle used for a timed interaction (ex: hold button to turn valve, etc.).*/
 	FTimerHandle TH_TimedInteraction;
+	
 	/** @brief Timer handle used to control firing the line trace that checks for interactables.*/
 	FTimerHandle TH_InteractionCheck;
+	
 	FInteractionData InteractionData;
 	
-	// timeline properties used for camera aiming transition
+	// properties related to camera aiming transition
 	//---------------------------------------------------------
-	UPROPERTY(VisibleAnywhere, Category="Character | Camera")
+	UPROPERTY(VisibleAnywhere, Category="PlayerCharacter | Aiming")
 	FVector DefaultCameraLocation;
 	
-	UPROPERTY(VisibleAnywhere, Category="Character | Camera")
+	UPROPERTY(VisibleAnywhere, Category="PlayerCharacter | Aiming")
 	FVector AimingCameraLocation;
 
-	UPROPERTY(VisibleAnywhere, Category="Character | Camera")
+	UPROPERTY(VisibleAnywhere, Category="PlayerCharacter | Aiming")
 	TObjectPtr<UTimelineComponent> AimingCameraTimeline;
 
-	UPROPERTY(EditDefaultsOnly, Category="Character | Aim Timeline")
+	UPROPERTY(EditDefaultsOnly, Category="PlayerCharacter | Aiming")
 	TObjectPtr<UCurveFloat> AimingCameraCurve;
 	
 //======================================================================================

@@ -12,6 +12,8 @@ AInterfaceTestActor::AInterfaceTestActor()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
 
 	SetRootComponent(Mesh);
+
+	Mesh->SetCollisionObjectType(ECC_GameTraceChannel1);
 }
 
 // Called when the game starts or when spawned

@@ -21,7 +21,10 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-ACSTutorialCharacter::ACSTutorialCharacter()
+ACSTutorialCharacter::ACSTutorialCharacter() :
+	InteractionCheckFrequency(0.1f),
+	AimingInteractionDistance(275.0f),
+	DefaultInteractionDistance(475.0f)
 {
 	// default/built-in UE game template construction code
 	//-----------------------------------------------------------------------------------
@@ -70,9 +73,6 @@ ACSTutorialCharacter::ACSTutorialCharacter()
 	DefaultCameraLocation = FVector{0.0f, 0.0f, 65.0f};
 	AimingCameraLocation = FVector{175.0f, 50.0f, 55.0f};
 	CameraBoom->SocketOffset = DefaultCameraLocation;
-
-	InteractionCheckFrequency = 0.1;
-	InteractionCheckDistance = 200.0f;
 
 	// capsule default dimensions = 34.0f, 88.0f
 	GetCapsuleComponent()->InitCapsuleSize(42.0f, 96.0f);
@@ -138,53 +138,71 @@ void ACSTutorialCharacter::BeginPlay()
 		&ACSTutorialCharacter::PerformInteractionCheck,
 		InteractionCheckFrequency,
 		true);
+
+	// initialize defaults for interaction system queries
+	InteractionCollisionQueryParams.bTraceComplex = false;
+	InteractionObjectQueryParams.AddObjectTypesToQuery(ECC_GameTraceChannel1);
 }
 
 void ACSTutorialCharacter::PerformInteractionCheck()
 {
-	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
-
-	FVector TraceStart;
-
-	if (!bAiming)
+	// Use dot product to only allow the line trace to happen if view is pointed
+	// in the 180 degree arc in front of the character
+	if (FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector()) > 0)
 	{
-		InteractionCheckDistance = 200.0f;
-		TraceStart = GetPawnViewLocation();
-	}
-	else
-	{
-		InteractionCheckDistance = 250.0f;
-		TraceStart = FollowCamera->GetComponentLocation();
-	}
+		InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
 
-	FVector TraceEnd{TraceStart + GetViewRotation().Vector() * InteractionCheckDistance};
+		const FVector TraceStart{FollowCamera->GetComponentLocation()};
+		const float InteractionCheckDistance = bAiming ? AimingInteractionDistance : DefaultInteractionDistance;
+		const FVector TraceEnd{TraceStart + GetViewRotation().Vector() * InteractionCheckDistance};
 
-	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector());
+		// draw debug sphere at the same location and size as the sweep sphere
+		// DrawDebugSphere(GetWorld(),
+		//                 TraceEnd,
+		//                 70.0f,
+		//                 8, FColor::Blue,
+		//                 false,
+		//                 5.0f);
 
-	if (LookDirection > 0)
-	{
-		// uncomment for interaction trace debugging
-		// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
-
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this);
-
-		FHitResult TraceHit;
-
-		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+		// create an array to store all sweep hit results
+		if (GetWorld()->SweepMultiByObjectType(OutHits,
+		                                       TraceStart,
+		                                       TraceEnd,
+		                                       FQuat::Identity,
+		                                       InteractionObjectQueryParams,
+		                                       FCollisionShape::MakeSphere(70.0f),
+		                                       InteractionCollisionQueryParams))
 		{
-			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
+			FHitResult ClosestHit = OutHits[0];
+			// if more than one interactable was detected, find the closest one by iterating through all hits to find the
+			// one with the lowest distance value
+			if (OutHits.Num() > 1)
 			{
-				if (TraceHit.GetActor() != InteractionData.CurrentInteractable)
+				for (const FHitResult& Hit : OutHits)
 				{
-					FoundInteractable(TraceHit.GetActor());
-					return;
+					if (Hit.Distance < ClosestHit.Distance)
+					{
+						ClosestHit = Hit;
+					}
 				}
+			}
 
-				if (TraceHit.GetActor() == InteractionData.CurrentInteractable)
+			// check for interactable interface
+			if (ClosestHit.GetActor()->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
+			{
+				// check if the new interactable is different from the previous one
+				if (ClosestHit.GetActor() != InteractionTarget.GetObject())
 				{
+					// end focus on the previous interactable
+					if (IsValid(InteractionTarget.GetObject()))
+						InteractionTarget->EndFocus();
+
+					// process new interactable
+					FoundInteractable(ClosestHit.GetActor());
 					return;
 				}
+				// if looking at the same interactable, do nothing
+				return;
 			}
 		}
 	}
@@ -194,99 +212,90 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 
 void ACSTutorialCharacter::FoundInteractable(AActor* NewInteractable)
 {
-	if (IsInteracting())
-	{
-		EndInteract();
-	}
+	InteractionTarget = NewInteractable;
 
-	if (InteractionData.CurrentInteractable)
-	{
-		TargetInteractable = InteractionData.CurrentInteractable;
-		TargetInteractable->EndFocus();
-	}
+	InteractionTarget->BeginFocus();
 
-	InteractionData.CurrentInteractable = NewInteractable;
-	TargetInteractable = NewInteractable;
-
-	HUD->UpdateInteractionWidget(&TargetInteractable->InteractableData);
-
-	TargetInteractable->BeginFocus();
+	// send the new InteractionTarget data to the InteractionWidget
+	HUD->UpdateInteractionWidget(&InteractionTarget->InteractableData);
 }
 
 void ACSTutorialCharacter::NoInteractableFound()
 {
+	// clear timer for any ongoing timed interaction
 	if (IsInteracting())
 	{
 		GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
 	}
 
-	if (InteractionData.CurrentInteractable)
+	// call end focus on current interaction target
+	if (IsValid(InteractionTarget.GetObject()))
 	{
-		if (IsValid(TargetInteractable.GetObject()))
-		{
-			TargetInteractable->EndFocus();
-			EndInteract();
-		}
-
-		HUD->HideInteractionWidget();
-
-		InteractionData.CurrentInteractable = nullptr;
-		TargetInteractable = nullptr;
+		InteractionTarget->EndFocus();
+		InteractionTarget = nullptr;
 	}
+
+	HUD->HideInteractionWidget();
 }
 
 void ACSTutorialCharacter::BeginInteract()
 {
-	// verify nothing has changed with the interactable state since beginning interaction
+	// rerun PerformInteractionCheck to ensure the InteractionTarget
+	// still meets all interaction requirements
 	PerformInteractionCheck();
 
-	if (InteractionData.CurrentInteractable)
+	if (IsValid(InteractionTarget.GetObject()))
 	{
-		if (IsValid(TargetInteractable.GetObject()))
-		{
-			TargetInteractable->BeginInteract();
+		InteractionTarget->BeginInteract();
 
-			if (FMath::IsNearlyZero(TargetInteractable->InteractableData.InteractionDuration, 0.1f))
-			{
-				Interact();
-			}
-			else
-			{
-				GetWorldTimerManager().SetTimer(TH_TimedInteraction,
-				                                this,
-				                                &ACSTutorialCharacter::Interact,
-				                                TargetInteractable->InteractableData.InteractionDuration,
-				                                false);
-			}
+		// if there no time requirement on the interaction, simply call Interact
+		if (FMath::IsNearlyZero(InteractionTarget->InteractableData.InteractionDuration, 0.1f))
+		{
+			Interact();
+		}
+		else
+		{
+			// otherwise, start the timed interaction timer
+			// after InteractionDuration elapses, Interact is called
+			GetWorldTimerManager().SetTimer(TH_TimedInteraction,
+			                                this,
+			                                &ACSTutorialCharacter::Interact,
+			                                InteractionTarget->InteractableData.InteractionDuration,
+			                                false);
 		}
 	}
 }
 
 void ACSTutorialCharacter::EndInteract()
 {
-	GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
-
-	if (IsValid(TargetInteractable.GetObject()))
+	// clear timer in case the interact button was released prior to reaching the timed interaction duration
+	if (IsInteracting())
 	{
-		TargetInteractable->EndInteract();
+		GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
+	}
+
+	if (IsValid(InteractionTarget.GetObject()))
+	{
+		InteractionTarget->EndInteract();
 	}
 }
 
 void ACSTutorialCharacter::Interact()
 {
+	// clear timer in case the interaction had a time requirement
 	GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
 
-	if (IsValid(TargetInteractable.GetObject()))
+	if (IsValid(InteractionTarget.GetObject()))
 	{
-		TargetInteractable->Interact(this);
+		InteractionTarget->Interact(this);
 	}
 }
 
 void ACSTutorialCharacter::UpdateInteractionWidget() const
 {
-	if (IsValid(TargetInteractable.GetObject()))
+	if (IsValid(InteractionTarget.GetObject()))
 	{
-		HUD->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+		HUD->UpdateInteractionWidget(&InteractionTarget->InteractableData);
 	}
 }
 

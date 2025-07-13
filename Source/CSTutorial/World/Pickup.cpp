@@ -9,6 +9,8 @@ APickup::APickup()
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
 	PickupMesh->SetSimulatePhysics(true);
 	SetRootComponent(PickupMesh);
+
+	PickupMesh->SetCollisionObjectType(ECC_GameTraceChannel1);
 }
 
 void APickup::BeginPlay()
