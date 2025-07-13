@@ -1,0 +1,26 @@
+# directories
+Intermediate/
+DerivedDataCache/
+Binaries/
+Saved/
+Script/
+Plugins/
+Build/
+Content/*
+.idea/
+.vs/
+.tmp.driveupload/
+
+# exceptions
+!Content/CSTutorial
+!Content/Input
+!Content/Characters
+!Content/LevelPrototyping
+!Content/ThirdPerson
+!Content/Variant_Combat
+!Content/Variant_Platforming
+!Content/Variant_SideScrolling
+
+# file types
+*.sln
+*.vsconfig
