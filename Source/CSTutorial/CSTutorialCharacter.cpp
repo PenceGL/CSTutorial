@@ -150,8 +150,6 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 	// in the 180 degree arc in front of the character
 	if (FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector()) > 0)
 	{
-		InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
-
 		const FVector TraceStart{FollowCamera->GetComponentLocation()};
 		const float InteractionCheckDistance = bAiming ? AimingInteractionDistance : DefaultInteractionDistance;
 		const FVector TraceEnd{TraceStart + GetViewRotation().Vector() * InteractionCheckDistance};

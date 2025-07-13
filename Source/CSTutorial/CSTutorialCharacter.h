@@ -155,8 +155,6 @@ protected:
 	/** @brief Timer handle used to control firing the line trace that checks for interactables.*/
 	FTimerHandle TH_InteractionCheck;
 	
-	FInteractionData InteractionData;
-	
 	// properties related to camera aiming transition
 	//---------------------------------------------------------
 	UPROPERTY(VisibleAnywhere, Category="PlayerCharacter | Aiming")
