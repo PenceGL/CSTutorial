@@ -82,7 +82,7 @@ public:
 
 	// CSTutorial game functions
 	//---------------------------------------------------------
-	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction); };
+	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TH_TimedInteraction); };
 
 	FORCEINLINE UInventoryComponent* GetInventory() const { return PlayerInventory; };
 
@@ -153,7 +153,10 @@ protected:
 	//---------------------------------------------------------
 	float InteractionCheckFrequency;
 	float InteractionCheckDistance;
-	FTimerHandle TimerHandle_Interaction;
+	/** @brief Timer handle used for a timed interaction (ex: hold button to turn valve, etc.).*/
+	FTimerHandle TH_TimedInteraction;
+	/** @brief Timer handle used to control firing the line trace that checks for interactables.*/
+	FTimerHandle TH_InteractionCheck;
 	FInteractionData InteractionData;
 	
 	// timeline properties used for camera aiming transition
@@ -187,7 +190,6 @@ protected:
 	// CSTutorial game functions
 	//---------------------------------------------------------
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
 	void ToggleMenu();
 

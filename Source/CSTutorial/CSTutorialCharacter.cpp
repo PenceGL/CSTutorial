@@ -65,7 +65,7 @@ ACSTutorialCharacter::ACSTutorialCharacter()
 	PlayerInventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("PlayerInventory"));
 	PlayerInventory->SetSlotsCapacity(20);
 	PlayerInventory->SetWeightCapacity(50.0f);
-	
+
 	AimingCameraTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("AimingCameraTimeline"));
 	DefaultCameraLocation = FVector{0.0f, 0.0f, 65.0f};
 	AimingCameraLocation = FVector{175.0f, 50.0f, 55.0f};
@@ -120,15 +120,6 @@ void ACSTutorialCharacter::BeginPlay()
 	MainPlayerController = Cast<ACSTutorialPlayerController>(GetController());
 	HUD = Cast<ACSTutorialHUD>(MainPlayerController->GetHUD());
 
-	// if (MainPlayerController)
-	// {
-	// 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-	// 		MainPlayerController->GetLocalPlayer()))
-	// 	{
-	// 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	// 	}
-	// }
-
 	FOnTimelineFloat AimLerpAlphaValue;
 	FOnTimelineEvent TimelineFinishedEvent;
 	AimLerpAlphaValue.BindUFunction(this, FName("UpdateCameraTimeline"));
@@ -139,17 +130,14 @@ void ACSTutorialCharacter::BeginPlay()
 		AimingCameraTimeline->AddInterpFloat(AimingCameraCurve, AimLerpAlphaValue);
 		AimingCameraTimeline->SetTimelineFinishedFunc(TimelineFinishedEvent);
 	}
-}
 
-
-void ACSTutorialCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
-	{
-		PerformInteractionCheck();
-	}
+	// start looping timer for interactable checking
+	GetWorldTimerManager().SetTimer(
+		TH_InteractionCheck,
+		this,
+		&ACSTutorialCharacter::PerformInteractionCheck,
+		InteractionCheckFrequency,
+		true);
 }
 
 void ACSTutorialCharacter::PerformInteractionCheck()
@@ -175,10 +163,12 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 
 	if (LookDirection > 0)
 	{
-		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
+		// uncomment for interaction trace debugging
+		// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
 
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
+
 		FHitResult TraceHit;
 
 		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
@@ -227,7 +217,7 @@ void ACSTutorialCharacter::NoInteractableFound()
 {
 	if (IsInteracting())
 	{
-		GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+		GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
 	}
 
 	if (InteractionData.CurrentInteractable)
@@ -262,7 +252,7 @@ void ACSTutorialCharacter::BeginInteract()
 			}
 			else
 			{
-				GetWorldTimerManager().SetTimer(TimerHandle_Interaction,
+				GetWorldTimerManager().SetTimer(TH_TimedInteraction,
 				                                this,
 				                                &ACSTutorialCharacter::Interact,
 				                                TargetInteractable->InteractableData.InteractionDuration,
@@ -274,7 +264,7 @@ void ACSTutorialCharacter::BeginInteract()
 
 void ACSTutorialCharacter::EndInteract()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
 
 	if (IsValid(TargetInteractable.GetObject()))
 	{
@@ -284,7 +274,7 @@ void ACSTutorialCharacter::EndInteract()
 
 void ACSTutorialCharacter::Interact()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
 
 	if (IsValid(TargetInteractable.GetObject()))
 	{

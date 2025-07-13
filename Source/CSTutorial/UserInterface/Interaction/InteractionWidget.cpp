@@ -39,17 +39,25 @@ void UInteractionWidget::UpdateWidget(const FInteractableData* InteractableData)
 		break;
 		
 	case EInteractableType::NonPlayerCharacter:
+		QuantityText->SetVisibility(ESlateVisibility::Collapsed);
+		InteractionProgressBar->SetVisibility(ESlateVisibility::Collapsed);
 		break;
 		
 	case EInteractableType::Device:
+		QuantityText->SetVisibility(ESlateVisibility::Collapsed);
+		InteractionProgressBar->SetVisibility(ESlateVisibility::Visible);
 		break;
 		
 	case EInteractableType::Toggle:
+		QuantityText->SetVisibility(ESlateVisibility::Collapsed);
+		InteractionProgressBar->SetVisibility(ESlateVisibility::Visible);
 		break;
 		
 	case EInteractableType::Container:
+		QuantityText->SetVisibility(ESlateVisibility::Collapsed);
+		InteractionProgressBar->SetVisibility(ESlateVisibility::Collapsed);
 		break;
-		
+	
 	default: ;
 	}
 
