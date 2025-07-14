@@ -27,6 +27,7 @@ void APickup::InitializePickup(const int32 InQuantity)
 		const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(ItemRowHandle.RowName.ToString());
 
 		ItemReference = NewObject<UItemBase>(this, UItemBase::StaticClass());
+		ItemReference->bIsPickup = true;
 
 		ItemReference->ID = ItemData->ID;
 		ItemReference->ItemType = ItemData->ItemType;

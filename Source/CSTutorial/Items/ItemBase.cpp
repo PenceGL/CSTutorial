@@ -35,6 +35,7 @@ void UItemBase::SetQuantity(const int32 NewQuantity)
 	{
 		Quantity = FMath::Clamp(NewQuantity, 0, this->NumericData.bIsStackable ? this->NumericData.MaxStackSize : 1);
 
+		// if the item belongs to an inventory and its quantity is set to 0, remove it
 		if (this->OwningInventory)
 		{
 			if (this->Quantity <= 0)
@@ -42,9 +43,11 @@ void UItemBase::SetQuantity(const int32 NewQuantity)
 				this->OwningInventory->RemoveSingleInstanceOfItem(this);
 			}
 		}
-		else
+		else if (!this->bIsPickup)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("ItemBase OwningInventory was null (item may be a pickup)."));
+			// if the item is a pickup, it should not have an owning inventory
+			// all other cases should trigger a warning if no owning inventory found
+			UE_LOG(LogTemp, Warning, TEXT("ItemBase OwningInventory was null!"));
 		}
 	}
 }
