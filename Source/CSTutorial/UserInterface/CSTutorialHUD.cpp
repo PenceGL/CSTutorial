@@ -72,19 +72,19 @@ void ACSTutorialHUD::ToggleMenu()
 
 void ACSTutorialHUD::ShowCrosshair()
 {
-	if (CrosshairWidget)
+	if (IsValid(CrosshairWidget))
 		CrosshairWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void ACSTutorialHUD::HideCrosshair()
 {
-	if (CrosshairWidget)
+	if (IsValid(CrosshairWidget))
 		CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void ACSTutorialHUD::ShowInteractionWidget() const
 {
-	if (InteractionWidget)
+	if (IsValid(InteractionWidget))
 	{
 		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
 	}
@@ -92,7 +92,7 @@ void ACSTutorialHUD::ShowInteractionWidget() const
 
 void ACSTutorialHUD::HideInteractionWidget() const
 {
-	if (InteractionWidget)
+	if (IsValid(InteractionWidget))
 	{
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -100,7 +100,7 @@ void ACSTutorialHUD::HideInteractionWidget() const
 
 void ACSTutorialHUD::UpdateInteractionWidget(const FInteractableData* InteractableData) const
 {
-	if (InteractionWidget)
+	if (IsValid(InteractionWidget))
 	{
 		if (InteractionWidget->GetVisibility() == ESlateVisibility::Collapsed)
 		{
@@ -110,5 +110,3 @@ void ACSTutorialHUD::UpdateInteractionWidget(const FInteractableData* Interactab
 		InteractionWidget->UpdateWidget(InteractableData);
 	}
 }
-
-

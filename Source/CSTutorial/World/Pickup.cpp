@@ -59,11 +59,10 @@ void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
 
 void APickup::UpdateInteractableData()
 {
-	InstanceInteractableData.InteractableType = EInteractableType::Pickup;
-	InstanceInteractableData.Action = ItemReference->TextData.InteractionText;
-	InstanceInteractableData.Name = ItemReference->TextData.Name;
-	InstanceInteractableData.Quantity = ItemReference->Quantity;
-	InteractableData = InstanceInteractableData;
+	InteractableData.InteractableType = EInteractableType::Pickup;
+	InteractableData.Action = ItemReference->TextData.InteractionText;
+	InteractableData.Name = ItemReference->TextData.Name;
+	InteractableData.Quantity = ItemReference->Quantity;
 }
 
 void APickup::BeginFocus()

@@ -24,12 +24,8 @@ public class CSTutorial : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"CSTutorial",
-			"CSTutorial/Variant_Platforming",
 			"CSTutorial/Variant_Combat",
-			"CSTutorial/Variant_Combat/AI",
-			"CSTutorial/Variant_SideScrolling",
-			"CSTutorial/Variant_SideScrolling/Gameplay",
-			"CSTutorial/Variant_SideScrolling/AI"
+			"CSTutorial/Variant_Combat/AI"
 		});
 
 		// Uncomment if you are using Slate UI

@@ -29,7 +29,7 @@ UCLASS(abstract)
 class ACSTutorialCharacter : public ACharacter
 {
 	GENERATED_BODY()
-	
+
 public:
 //======================================================================================
 // PROPERTIES & VARIABLES
@@ -186,6 +186,7 @@ protected:
 	// CSTutorial game functions
 	//---------------------------------------------------------
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	void ToggleMenu();
 

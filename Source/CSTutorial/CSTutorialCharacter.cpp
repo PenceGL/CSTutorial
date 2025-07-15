@@ -1,6 +1,7 @@
 // game
 #include "CSTutorialCharacter.h"
 #include "UserInterface/CSTutorialHUD.h"
+#include "UserInterface/Interaction/InteractionWidget.h"
 #include "Components/InventoryComponent.h"
 #include "CSTutorialPlayerController.h"
 #include "Interfaces/InteractionInterface.h"
@@ -11,6 +12,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/TimelineComponent.h"
+#include "Components/ProgressBar.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
@@ -144,6 +146,16 @@ void ACSTutorialCharacter::BeginPlay()
 	InteractionObjectQueryParams.AddObjectTypesToQuery(ECC_GameTraceChannel1);
 }
 
+void ACSTutorialCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (GetWorldTimerManager().IsTimerActive(TH_TimedInteraction))
+	{
+		const float InteractProgress = GetWorldTimerManager().GetTimerElapsed(TH_TimedInteraction) / InteractionTarget->InteractableData.InteractionDuration;
+		HUD->GetInteractionWidget()->InteractionProgressBar->SetPercent(FMath::Clamp(InteractProgress, 0.0f, 1.0f));
+	}
+}
+
 void ACSTutorialCharacter::PerformInteractionCheck()
 {
 	// Use dot product to only allow the line trace to happen if view is pointed
@@ -221,27 +233,22 @@ void ACSTutorialCharacter::FoundInteractable(AActor* NewInteractable)
 void ACSTutorialCharacter::NoInteractableFound()
 {
 	// clear timer for any ongoing timed interaction
-	if (IsInteracting())
-	{
-		GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
-	}
+	GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
 
 	// call end focus on current interaction target
 	if (IsValid(InteractionTarget.GetObject()))
 	{
+		InteractionTarget->EndInteract();
 		InteractionTarget->EndFocus();
 		InteractionTarget = nullptr;
 	}
 
+	HUD->GetInteractionWidget()->InteractionProgressBar->SetPercent(0.0f);
 	HUD->HideInteractionWidget();
 }
 
 void ACSTutorialCharacter::BeginInteract()
 {
-	// rerun PerformInteractionCheck to ensure the InteractionTarget
-	// still meets all interaction requirements
-	PerformInteractionCheck();
-
 	if (IsValid(InteractionTarget.GetObject()))
 	{
 		InteractionTarget->BeginInteract();
@@ -254,7 +261,7 @@ void ACSTutorialCharacter::BeginInteract()
 		else
 		{
 			// otherwise, start the timed interaction timer
-			// after InteractionDuration elapses, Interact is called
+			// after the duration of InteractionDuration has elapsed, Interact is called
 			GetWorldTimerManager().SetTimer(TH_TimedInteraction,
 			                                this,
 			                                &ACSTutorialCharacter::Interact,
@@ -267,14 +274,12 @@ void ACSTutorialCharacter::BeginInteract()
 void ACSTutorialCharacter::EndInteract()
 {
 	// clear timer in case the interact button was released prior to reaching the timed interaction duration
-	if (IsInteracting())
-	{
-		GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
-	}
+	GetWorldTimerManager().ClearTimer(TH_TimedInteraction);
 
 	if (IsValid(InteractionTarget.GetObject()))
 	{
 		InteractionTarget->EndInteract();
+		// can reset progress bar percent here if needed, or possibly could use this as a feature
 	}
 }
 

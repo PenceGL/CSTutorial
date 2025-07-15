@@ -45,8 +45,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
 	TObjectPtr<UItemBase> ItemReference;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "Pickup | Interaction Data")
-	FInteractableData InstanceInteractableData;
 
 	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
 	int32 ItemQuantity;
