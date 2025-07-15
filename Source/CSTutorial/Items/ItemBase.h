@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/ItemDataStructs.h"
-#include "CSTutorialCharacter.h"
+#include "Player/CSTutorialCharacter.h"
 #include "ItemBase.generated.h"
 
 class UInventoryComponent;

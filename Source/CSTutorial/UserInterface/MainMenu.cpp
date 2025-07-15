@@ -3,7 +3,7 @@
 #include "Items/ItemBase.h"
 #include "UserInterface/Inventory/ItemDragDropOperation.h"
 
-#include "CSTutorialCharacter.h"
+#include "Player/CSTutorialCharacter.h"
 
 void UMainMenu::NativeOnInitialized()
 {
