@@ -132,6 +132,10 @@ void ACSTutorialCharacter::BeginPlay()
 		AimingCameraTimeline->AddInterpFloat(AimingCameraCurve, AimLerpAlphaValue);
 		AimingCameraTimeline->SetTimelineFinishedFunc(TimelineFinishedEvent);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AimingCameraTimeline or AimingCameraCurve were null! Aiming functionality will not work until corrected."));
+	}
 
 	// start looping timer for interactable checking
 	GetWorldTimerManager().SetTimer(
