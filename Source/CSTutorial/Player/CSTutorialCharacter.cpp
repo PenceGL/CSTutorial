@@ -363,7 +363,7 @@ void ACSTutorialCharacter::CameraTimelineEnd() const
 	}
 }
 
-void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
+void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop)
 {
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -381,7 +381,7 @@ void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityT
 void ACSTutorialCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	const FVector2D MovementVector = Value.Get<FVector2D>();
 
 	// route the input
 	DoMove(MovementVector.X, MovementVector.Y);
@@ -390,13 +390,13 @@ void ACSTutorialCharacter::Move(const FInputActionValue& Value)
 void ACSTutorialCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	// route the input
 	DoLook(LookAxisVector.X, LookAxisVector.Y);
 }
 
-void ACSTutorialCharacter::DoMove(float Right, float Forward)
+void ACSTutorialCharacter::DoMove(const float Right, const float Forward)
 {
 	if (GetController() != nullptr)
 	{

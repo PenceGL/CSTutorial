@@ -70,7 +70,7 @@ public:
 
 	void UpdateInteractionWidget() const;
 
-	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
+	void DropItem(UItemBase* ItemToDrop);
 
 
 protected:

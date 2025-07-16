@@ -23,7 +23,7 @@ bool UMainMenu::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 
 	if (PlayerCharacter && ItemDragDrop->SourceItem)
 	{
-		PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
+		PlayerCharacter->DropItem(ItemDragDrop->SourceItem);
 		return true;
 	}
 	return false;
