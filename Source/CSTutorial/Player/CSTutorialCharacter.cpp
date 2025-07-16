@@ -155,7 +155,10 @@ void ACSTutorialCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	if (GetWorldTimerManager().IsTimerActive(TH_TimedInteraction))
 	{
-		const float InteractProgress = GetWorldTimerManager().GetTimerElapsed(TH_TimedInteraction) / InteractionTarget->InteractableData.InteractionDuration;
+		// percentage of completion = timer value / interaction duration
+		const float InteractProgress =
+			GetWorldTimerManager().GetTimerElapsed(TH_TimedInteraction) /
+				InteractionTarget->InteractableData.InteractionDuration;
 		HUD->GetInteractionWidget()->InteractionProgressBar->SetPercent(FMath::Clamp(InteractProgress, 0.0f, 1.0f));
 	}
 }
@@ -362,26 +365,19 @@ void ACSTutorialCharacter::CameraTimelineEnd() const
 
 void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	if (PlayerInventory->FindMatchingItem(ItemToDrop))
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.bNoFail = true;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.bNoFail = true;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		const FVector SpawnLocation{GetActorLocation() + GetActorForwardVector() * 50.0f};
-		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+	const FVector SpawnLocation{GetActorLocation() + GetActorForwardVector() * 50.0f};
+	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
 
-		const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+	const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
 
-		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+	APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
 
-		Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null!"));
-	}
+	Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
 }
 
 void ACSTutorialCharacter::Move(const FInputActionValue& Value)

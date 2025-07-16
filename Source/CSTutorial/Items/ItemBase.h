@@ -56,7 +56,7 @@ public:
 	void ResetItemFlags();
 
 	UFUNCTION(Category = "Item")
-	UItemBase* CreateItemCopy() const;
+	UItemBase* CreateSelfCopy(const bool bSetCopyFlag) const;
 
 	UFUNCTION(Category = "Item")
 	FORCEINLINE float GetItemStackWeight() const { return Quantity * NumericData.Weight; };

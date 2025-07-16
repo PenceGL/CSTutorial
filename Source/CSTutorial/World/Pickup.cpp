@@ -48,7 +48,7 @@ void APickup::InitializePickup(const int32 InQuantity)
 void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
 {
 	ItemReference = ItemToDrop;
-
+	ItemReference->bIsPickup = true;
 	InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 	ItemReference->NumericData.Weight = ItemToDrop->GetItemSingleWeight();
 	ItemReference->OwningInventory = nullptr;

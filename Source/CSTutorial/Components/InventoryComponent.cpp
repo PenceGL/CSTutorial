@@ -82,13 +82,18 @@ void UInventoryComponent::RemoveSingleInstanceOfItem(UItemBase* ItemToRemove)
 int32 UInventoryComponent::RemoveAmountOfItem(UItemBase* ItemIn, int32 DesiredAmountToRemove)
 {
 	const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
-
-	ItemIn->SetQuantity(ItemIn->Quantity - ActualAmountToRemove);
-
 	InventoryTotalWeight -= ActualAmountToRemove * ItemIn->GetItemSingleWeight();
 
-	OnInventoryUpdated.Broadcast();
-
+	ItemIn->SetQuantity(ItemIn->Quantity - ActualAmountToRemove);
+	if (ItemIn->Quantity <= 0)
+	{
+		RemoveSingleInstanceOfItem(ItemIn);
+	}
+	else
+	{
+		OnInventoryUpdated.Broadcast();
+	}
+	
 	return ActualAmountToRemove;
 }
 
@@ -214,7 +219,7 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 Request
 				ItemIn->SetQuantity(AmountToDistribute);
 
 				// create a copy since only a partial stack is being added
-				AddNewItem(ItemIn->CreateItemCopy(), WeightLimitAddAmount);
+				AddNewItem(ItemIn->CreateSelfCopy(true), WeightLimitAddAmount);
 				return RequestedAddAmount - AmountToDistribute;
 			}
 
@@ -276,24 +281,25 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 
 void UInventoryComponent::AddNewItem(UItemBase* Item, const int32 AmountToAdd)
 {
-	UItemBase* NewItem;
+	Item->OwningInventory = this;
+	Item->SetQuantity(AmountToAdd);
 
 	if (Item->bIsCopy || Item->bIsPickup)
 	{
-		// if the item is already a copy, or is a world pickup
-		NewItem = Item;
-		NewItem->ResetItemFlags();
+		// if the incoming item is already flagged as a copy, or is a world pickup, we can just add it directly
+		// ex.: was only able to add a partial stack of something in HandleStackableItems, so the partial stack being added
+		// would be flagged as a copy so there won't be a duplicate item pointer in the game world and in the inventory
+		Item->ResetItemFlags();
+		InventoryContents.Add(Item);
 	}
 	else
 	{
-		// used when splitting or dragging to/from another inventory
-		NewItem = Item->CreateItemCopy();
+		// used when splitting or when dragging to/from another inventory
+		// you can't add the incoming item directly, or else the pointer will be to the same data in both inventories
+		// that's bad when the other inventory deletes it, because then it would go null in this one
+		InventoryContents.Add(Item->CreateSelfCopy(false));
 	}
 
-	NewItem->OwningInventory = this;
-	NewItem->SetQuantity(AmountToAdd);
-
-	InventoryContents.Add(NewItem);
-	InventoryTotalWeight += NewItem->GetItemStackWeight();
+	InventoryTotalWeight += Item->GetItemStackWeight();
 	OnInventoryUpdated.Broadcast();
 }

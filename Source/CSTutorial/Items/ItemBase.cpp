@@ -1,5 +1,4 @@
 #include "Items/ItemBase.h"
-#include "Components/InventoryComponent.h"
 
 UItemBase::UItemBase() : bIsCopy(false), bIsPickup(false)
 {
@@ -11,7 +10,7 @@ void UItemBase::ResetItemFlags()
 	this->bIsPickup = false;
 }
 
-UItemBase* UItemBase::CreateItemCopy() const
+UItemBase* UItemBase::CreateSelfCopy(const bool bSetCopyFlag) const
 {
 	UItemBase* ItemCopy = NewObject<UItemBase>(StaticClass());
 
@@ -23,8 +22,8 @@ UItemBase* UItemBase::CreateItemCopy() const
 	ItemCopy->NumericData = this->NumericData;
 	ItemCopy->ItemStatistics = this->ItemStatistics;
 	ItemCopy->AssetData = this->AssetData;
-	
-	ItemCopy->bIsCopy = true;
+
+	ItemCopy->bIsCopy = bSetCopyFlag;
 
 	return ItemCopy;
 }
@@ -34,21 +33,6 @@ void UItemBase::SetQuantity(const int32 NewQuantity)
 	if (NewQuantity != this->Quantity)
 	{
 		Quantity = FMath::Clamp(NewQuantity, 0, this->NumericData.bIsStackable ? this->NumericData.MaxStackSize : 1);
-
-		// if the item belongs to an inventory and its quantity is set to 0, remove it
-		if (this->OwningInventory)
-		{
-			if (this->Quantity <= 0)
-			{
-				this->OwningInventory->RemoveSingleInstanceOfItem(this);
-			}
-		}
-		else if (!this->bIsPickup)
-		{
-			// if the item is a pickup, it should not have an owning inventory
-			// all other cases should trigger a warning if no owning inventory found
-			UE_LOG(LogTemp, Warning, TEXT("ItemBase OwningInventory was null!"));
-		}
 	}
 }
 
