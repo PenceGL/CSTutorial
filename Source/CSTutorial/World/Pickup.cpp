@@ -27,7 +27,6 @@ void APickup::InitializePickup(const int32 InQuantity)
 		const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(ItemRowHandle.RowName.ToString());
 
 		ItemReference = NewObject<UItemBase>(this, UItemBase::StaticClass());
-		ItemReference->bIsPickup = true;
 
 		ItemReference->ID = ItemData->ID;
 		ItemReference->ItemType = ItemData->ItemType;
@@ -45,15 +44,10 @@ void APickup::InitializePickup(const int32 InQuantity)
 	}
 }
 
-void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
+void APickup::InitializeDrop(const UItemBase* ItemToDrop)
 {
-	ItemReference = ItemToDrop;
-	ItemReference->bIsPickup = true;
-	InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
-	ItemReference->NumericData.Weight = ItemToDrop->GetItemSingleWeight();
-	ItemReference->OwningInventory = nullptr;
+	ItemReference = UItemBase::CreateItemCopy(ItemToDrop, this);
 	PickupMesh->SetStaticMesh(ItemToDrop->AssetData.Mesh);
-
 	UpdateInteractableData();
 }
 

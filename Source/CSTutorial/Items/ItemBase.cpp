@@ -1,29 +1,21 @@
 #include "Items/ItemBase.h"
 
-UItemBase::UItemBase() : bIsCopy(false), bIsPickup(false)
+UItemBase::UItemBase()
 {
 }
 
-void UItemBase::ResetItemFlags()
+UItemBase* UItemBase::CreateItemCopy(const UItemBase* ItemToCopy, UObject* NewOuter)
 {
-	this->bIsCopy = false;
-	this->bIsPickup = false;
-}
+	UItemBase* ItemCopy = NewObject<UItemBase>(NewOuter, StaticClass());
 
-UItemBase* UItemBase::CreateSelfCopy(const bool bSetCopyFlag) const
-{
-	UItemBase* ItemCopy = NewObject<UItemBase>(StaticClass());
-
-	ItemCopy->ID = this->ID;
-	ItemCopy->Quantity = this->Quantity;
-	ItemCopy->ItemQuality = this->ItemQuality;
-	ItemCopy->ItemType = this->ItemType;
-	ItemCopy->TextData = this->TextData;
-	ItemCopy->NumericData = this->NumericData;
-	ItemCopy->ItemStatistics = this->ItemStatistics;
-	ItemCopy->AssetData = this->AssetData;
-
-	ItemCopy->bIsCopy = bSetCopyFlag;
+	ItemCopy->ID = ItemToCopy->ID;
+	ItemCopy->Quantity = ItemToCopy->Quantity;
+	ItemCopy->ItemQuality = ItemToCopy->ItemQuality;
+	ItemCopy->ItemType = ItemToCopy->ItemType;
+	ItemCopy->TextData = ItemToCopy->TextData;
+	ItemCopy->NumericData = ItemToCopy->NumericData;
+	ItemCopy->ItemStatistics = ItemToCopy->ItemStatistics;
+	ItemCopy->AssetData = ItemToCopy->AssetData;
 
 	return ItemCopy;
 }

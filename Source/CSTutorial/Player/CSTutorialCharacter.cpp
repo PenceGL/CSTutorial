@@ -372,12 +372,10 @@ void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityT
 
 	const FVector SpawnLocation{GetActorLocation() + GetActorForwardVector() * 50.0f};
 	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-
-	const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-
+	
 	APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
-
-	Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
+	Pickup->InitializeDrop(ItemToDrop);
+	PlayerInventory->RemoveInstanceOfItem(ItemToDrop);
 }
 
 void ACSTutorialCharacter::Move(const FInputActionValue& Value)

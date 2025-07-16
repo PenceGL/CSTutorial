@@ -73,28 +73,25 @@ int32 UInventoryComponent::CalculateNumberForFullStack(const UItemBase* Stackabl
 	return FMath::Min(InitialRequestedAddAmount, AddAmountToMakeFullStack);
 }
 
-void UInventoryComponent::RemoveSingleInstanceOfItem(UItemBase* ItemToRemove)
+void UInventoryComponent::RemoveInstanceOfItem(UItemBase* ItemToRemove)
 {
+	InventoryTotalWeight -= ItemToRemove->GetItemStackWeight();
 	InventoryContents.RemoveSingle(ItemToRemove);
 	OnInventoryUpdated.Broadcast();
 }
 
-int32 UInventoryComponent::RemoveAmountOfItem(UItemBase* ItemIn, int32 DesiredAmountToRemove)
+void UInventoryComponent::RemoveAmountOfItem(UItemBase* ItemIn, int32 AmountToRemove)
 {
-	const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
-	InventoryTotalWeight -= ActualAmountToRemove * ItemIn->GetItemSingleWeight();
-
-	ItemIn->SetQuantity(ItemIn->Quantity - ActualAmountToRemove);
+	ItemIn->SetQuantity(ItemIn->Quantity - AmountToRemove);
 	if (ItemIn->Quantity <= 0)
 	{
-		RemoveSingleInstanceOfItem(ItemIn);
+		RemoveInstanceOfItem(ItemIn);
 	}
 	else
 	{
+		InventoryTotalWeight -= AmountToRemove * ItemIn->GetItemSingleWeight();
 		OnInventoryUpdated.Broadcast();
 	}
-	
-	return ActualAmountToRemove;
 }
 
 void UInventoryComponent::SplitExistingStack(UItemBase* ItemIn, const int32 AmountToSplit)
@@ -218,8 +215,8 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 Request
 				AmountToDistribute -= WeightLimitAddAmount;
 				ItemIn->SetQuantity(AmountToDistribute);
 
-				// create a copy since only a partial stack is being added
-				AddNewItem(ItemIn->CreateSelfCopy(true), WeightLimitAddAmount);
+				// add the new partial stack with WeightLimitAddAmount as quantity 
+				AddNewItem(ItemIn, WeightLimitAddAmount);
 				return RequestedAddAmount - AmountToDistribute;
 			}
 
@@ -281,24 +278,9 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 
 void UInventoryComponent::AddNewItem(UItemBase* Item, const int32 AmountToAdd)
 {
-	Item->OwningInventory = this;
 	Item->SetQuantity(AmountToAdd);
 
-	if (Item->bIsCopy || Item->bIsPickup)
-	{
-		// if the incoming item is already flagged as a copy, or is a world pickup, we can just add it directly
-		// ex.: was only able to add a partial stack of something in HandleStackableItems, so the partial stack being added
-		// would be flagged as a copy so there won't be a duplicate item pointer in the game world and in the inventory
-		Item->ResetItemFlags();
-		InventoryContents.Add(Item);
-	}
-	else
-	{
-		// used when splitting or when dragging to/from another inventory
-		// you can't add the incoming item directly, or else the pointer will be to the same data in both inventories
-		// that's bad when the other inventory deletes it, because then it would go null in this one
-		InventoryContents.Add(Item->CreateSelfCopy(false));
-	}
+	InventoryContents.Add(UItemBase::CreateItemCopy(Item, this));
 
 	InventoryTotalWeight += Item->GetItemStackWeight();
 	OnInventoryUpdated.Broadcast();

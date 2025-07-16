@@ -96,7 +96,6 @@ void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const
 
 		UItemDragDropOperation* DragItemOperation = NewObject<UItemDragDropOperation>();
 		DragItemOperation->SourceItem = ItemReference;
-		DragItemOperation->SourceInventory = ItemReference->OwningInventory;
 
 		DragItemOperation->DefaultDragVisual = DragVisual;
 		DragItemOperation->Pivot = EDragPivot::TopLeft;

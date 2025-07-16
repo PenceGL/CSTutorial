@@ -28,7 +28,7 @@ public:
 
 	void InitializePickup(const int32 InQuantity);
 
-	void InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity);
+	void InitializeDrop(const UItemBase* ItemToDrop);
 
 	FORCEINLINE UItemBase* GetItemData() const { return ItemReference; };
 

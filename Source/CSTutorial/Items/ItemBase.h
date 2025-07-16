@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/ItemDataStructs.h"
+#include "Components/InventoryComponent.h"
 #include "Player/CSTutorialCharacter.h"
 #include "ItemBase.generated.h"
 
@@ -18,9 +19,6 @@ public:
 	//======================================================================================
 	// PROPERTIES & VARIABLES
 	//======================================================================================
-	UPROPERTY()
-	TObjectPtr<UInventoryComponent> OwningInventory;
-	
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FName ID;
 	
@@ -45,18 +43,16 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemAssetData AssetData;
 
-	bool bIsCopy;
-	bool bIsPickup;
-
 	//======================================================================================
 	// FUNCTIONS
 	//======================================================================================
 	UItemBase();
 
-	void ResetItemFlags();
+	UFUNCTION(Category = "Item")
+	FORCEINLINE UInventoryComponent* GetOwningInventory() const { return Cast<UInventoryComponent>(GetOuter()); }
 
 	UFUNCTION(Category = "Item")
-	UItemBase* CreateSelfCopy(const bool bSetCopyFlag) const;
+	static UItemBase* CreateItemCopy(const UItemBase* ItemToCopy, UObject* NewOuter);
 
 	UFUNCTION(Category = "Item")
 	FORCEINLINE float GetItemStackWeight() const { return Quantity * NumericData.Weight; };

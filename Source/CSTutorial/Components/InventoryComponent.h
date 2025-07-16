@@ -90,10 +90,15 @@ public:
 	UFUNCTION(Category = "Inventory")
 	UItemBase* FindNextPartialStack(UItemBase* ItemIn) const;
 
+	/** @brief Used to remove an entire item from the inventory in one operation.*/
 	UFUNCTION(Category = "Inventory")
-	void RemoveSingleInstanceOfItem(UItemBase* ItemToRemove);
+	void RemoveInstanceOfItem(UItemBase* ItemToRemove);
+
+	/** @brief Used to remove a partial amount of an item from the inventory.*/
 	UFUNCTION(Category = "Inventory")
-	int32 RemoveAmountOfItem(UItemBase* ItemIn, int32 DesiredAmountToRemove);
+	void RemoveAmountOfItem(UItemBase* ItemIn, int32 DesiredAmountToRemove);
+
+	/** @brief Used to split an existing stack. Reduces the target stack quantity and adds the split amount as a new item.*/
 	UFUNCTION(Category = "Inventory")
 	void SplitExistingStack(UItemBase* ItemIn, const int32 AmountToSplit);
 
