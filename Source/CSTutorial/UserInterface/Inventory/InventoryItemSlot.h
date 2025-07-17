@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,6 +5,7 @@
 #include "InventoryItemSlot.generated.h"
 
 class UInventoryTooltip;
+class UInventorySubmenu;
 class UDragItemVisual;
 class UItemBase;
 class UTextBlock;
@@ -23,8 +22,15 @@ class CSTUTORIAL_API UInventoryItemSlot : public UUserWidget
 public:
 	FORCEINLINE void SetItemReference(UItemBase* ItemIn) { ItemReference = ItemIn; };
 	FORCEINLINE UItemBase* GetItemReference() const { return ItemReference; }
-
+	FORCEINLINE void SetSubMenuReference(const TObjectPtr<UInventorySubmenu> SubMenuIn)
+	{
+		SubMenuReference = SubMenuIn;
+		bNoSubmenuLinked = false;
+	};
+	
 protected:
+	bool bNoSubmenuLinked = true;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Inventory Slot")
 	TSubclassOf<UDragItemVisual> DragItemVisualClass;
 
@@ -42,6 +48,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
 	TObjectPtr<UTextBlock> ItemQuantity;
+
+	UPROPERTY()
+	TObjectPtr<UInventorySubmenu> SubMenuReference;
 
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;

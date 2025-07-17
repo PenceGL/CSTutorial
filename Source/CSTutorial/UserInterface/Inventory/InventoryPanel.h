@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,6 +6,7 @@
 
 class UInventoryItemSlot;
 class UInventoryComponent;
+class UInventorySubmenu;
 class ACSTutorialCharacter;
 class UWrapBox;
 class UGridPanel;
@@ -19,6 +18,8 @@ class CSTUTORIAL_API UInventoryPanel : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	void LinkSubmenuWidget();
+	
 	UFUNCTION()
 	void RefreshInventory();
 
@@ -33,8 +34,12 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<ACSTutorialCharacter> PlayerCharacter;
+	
 	UPROPERTY()
 	TObjectPtr<UInventoryComponent> InventoryReference;
+
+	UPROPERTY()
+	TObjectPtr<UInventorySubmenu> SubMenuReference;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventoryItemSlot> InventorySlotClass;

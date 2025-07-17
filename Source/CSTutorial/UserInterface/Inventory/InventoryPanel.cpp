@@ -4,6 +4,7 @@
 #include "Components/InventoryComponent.h"
 #include "UserInterface/Inventory/InventoryItemSlot.h"
 #include "UserInterface/Inventory/ItemDragDropOperation.h"
+#include "UserInterface/Inventory/InventorySubmenu.h"
 
 // engine
 #include "Components/TextBlock.h"
@@ -50,12 +51,30 @@ void UInventoryPanel::RefreshInventory()
 		for (UItemBase* const& InventoryItem : InventoryReference->GetInventoryContents())
 		{
 			UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this, InventorySlotClass);
+			
 			ItemSlot->SetItemReference(InventoryItem);
+			if (IsValid(SubMenuReference))
+			{
+				// rely on submenu being null unless explicitly set by LinkSubmenuWidget()
+				ItemSlot->SetSubMenuReference(SubMenuReference);
+			}
 	
 			InventoryWrapBox->AddChildToWrapBox(ItemSlot);
 		}
 	
 		SetInfoText();
+	}
+}
+
+void UInventoryPanel::LinkSubmenuWidget()
+{
+	if (const AEidolonHUD* HUD = Cast<AEidolonHUD>(GetOwningPlayer()->GetHUD()))
+	{
+		if (HUD->InventorySubMenu)
+		{
+			SubMenuReference = HUD->InventorySubMenu;
+			SubMenuReference->PlayerCharacter = Cast<AEidolonCharacter>(GetOwningPlayerPawn());
+		}
 	}
 }
 
