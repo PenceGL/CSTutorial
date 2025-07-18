@@ -5,6 +5,7 @@
 #include "UserInterface/Inventory/InventoryItemSlot.h"
 #include "UserInterface/Inventory/ItemDragDropOperation.h"
 #include "UserInterface/Inventory/InventorySubmenu.h"
+#include "UserInterface/CSTutorialHUD.h"
 
 // engine
 #include "Components/TextBlock.h"
@@ -68,12 +69,12 @@ void UInventoryPanel::RefreshInventory()
 
 void UInventoryPanel::LinkSubmenuWidget()
 {
-	if (const AEidolonHUD* HUD = Cast<AEidolonHUD>(GetOwningPlayer()->GetHUD()))
+	if (const ACSTutorialHUD* HUD = Cast<ACSTutorialHUD>(GetOwningPlayer()->GetHUD()))
 	{
 		if (HUD->InventorySubMenu)
 		{
 			SubMenuReference = HUD->InventorySubMenu;
-			SubMenuReference->PlayerCharacter = Cast<AEidolonCharacter>(GetOwningPlayerPawn());
+			SubMenuReference->PlayerCharacter = Cast<ACSTutorialCharacter>(GetOwningPlayerPawn());
 		}
 	}
 }
