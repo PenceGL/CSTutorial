@@ -111,7 +111,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 {
 	if (MainMenuClass)
 	{
-		MainMenuWidget = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
+		MainMenuWidget = CreateWidget<UMainMenu>(this, MainMenuClass);
 		MainMenuWidget->AddToViewport(5);
 		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -122,7 +122,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 
 	if (InteractionWidgetClass)
 	{
-		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
+		InteractionWidget = CreateWidget<UInteractionWidget>(this, InteractionWidgetClass);
 		// interaction widget doesn't need to be above menus
 		InteractionWidget->AddToViewport(0);
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
@@ -134,7 +134,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 
 	if (CrosshairWidgetClass)
 	{
-		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), CrosshairWidgetClass);
+		CrosshairWidget = CreateWidget<UUserWidget>(this, CrosshairWidgetClass);
 		// crosshair is conditional and always in center of screen, so it won't conflict with interaction widget
 		CrosshairWidget->AddToViewport(0);
 		CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
