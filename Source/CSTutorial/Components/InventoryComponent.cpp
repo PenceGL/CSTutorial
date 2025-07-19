@@ -1,4 +1,3 @@
-
 #include "Components/InventoryComponent.h"
 #include "Items/ItemBase.h"
 
@@ -130,9 +129,9 @@ FItemAddResult UInventoryComponent::HandleNonStackableItems(UItemBase* InputItem
 	}
 
 	AddNewItem(InputItem, 1);
-	
+
 	return FItemAddResult::AddedAll(1, FText::Format(
-		FText::FromString("Successfully added a single {0} to the inventory."), InputItem->TextData.Name));
+		                                FText::FromString("Successfully added a single {0} to the inventory."), InputItem->TextData.Name));
 }
 
 int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 RequestedAddAmount)
@@ -167,7 +166,7 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 Request
 			AmountToDistribute -= WeightLimitAddAmount;
 
 			ItemIn->SetQuantity(AmountToDistribute);
-			
+
 			// if max weight capacity would be exceeded by another item, just return early
 			if (InventoryTotalWeight + ExistingItemStack->GetItemSingleWeight() > InventoryWeightCapacity)
 			{
@@ -251,17 +250,17 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 		if (StackableAmountAdded == InitialRequestedAddAmount)
 		{
 			return FItemAddResult::AddedAll(InitialRequestedAddAmount, FText::Format(
-				FText::FromString("Successfully added {0} {1} to the inventory."),
-				InitialRequestedAddAmount,
-				InputItem->TextData.Name));
+				                                FText::FromString("Successfully added {0} {1} to the inventory."),
+				                                InitialRequestedAddAmount,
+				                                InputItem->TextData.Name));
 		}
 
 		if (StackableAmountAdded < InitialRequestedAddAmount && StackableAmountAdded > 0)
 		{
 			return FItemAddResult::AddedPartial(StackableAmountAdded, FText::Format(
-				FText::FromString("Partial amount of {0} added to the inventory. Number added = {1}"),
-				InputItem->TextData.Name,
-				StackableAmountAdded));
+				                                    FText::FromString("Partial amount of {0} added to the inventory. Number added = {1}"),
+				                                    InputItem->TextData.Name,
+				                                    StackableAmountAdded));
 		}
 
 		if (StackableAmountAdded <= 0)
@@ -271,17 +270,16 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 				InputItem->TextData.Name));
 		}
 	}
-	
+
 	check(false);
 	return FItemAddResult::AddedNone(FText::FromString("TryAddItem fallthrough error. GetOwner() check somehow failed."));
 }
 
-void UInventoryComponent::AddNewItem(UItemBase* Item, const int32 AmountToAdd)
+void UInventoryComponent::AddNewItem(const UItemBase* Item, const int32 AmountToAdd)
 {
-	Item->SetQuantity(AmountToAdd);
-
-	InventoryContents.Add(UItemBase::CreateItemCopy(Item, this));
-
-	InventoryTotalWeight += Item->GetItemStackWeight();
+	UItemBase* NewItem = UItemBase::CreateItemCopy(Item, this);
+	NewItem->SetQuantity(AmountToAdd);
+	InventoryContents.Add(NewItem);
+	InventoryTotalWeight += NewItem->GetItemStackWeight();
 	OnInventoryUpdated.Broadcast();
 }

@@ -22,23 +22,15 @@ class CSTUTORIAL_API UInventoryItemSlot : public UUserWidget
 public:
 	FORCEINLINE void SetItemReference(UItemBase* ItemIn) { ItemReference = ItemIn; };
 	FORCEINLINE UItemBase* GetItemReference() const { return ItemReference; }
-	FORCEINLINE void SetSubMenuReference(const TObjectPtr<UInventorySubmenu> SubMenuIn)
-	{
-		SubMenuReference = SubMenuIn;
-		bNoSubmenuLinked = false;
-	};
-	
-protected:
-	bool bNoSubmenuLinked = true;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Inventory Slot")
-	TSubclassOf<UDragItemVisual> DragItemVisualClass;
 
-	UPROPERTY(EditDefaultsOnly, Category="Inventory Slot")
-	TSubclassOf<UInventoryTooltip> ToolTipClass;
-	
+	FORCEINLINE void SetSubMenuReference(const TObjectPtr<UInventorySubmenu>& SubMenuIn) { SubMenuReference = SubMenuIn; }
+
+protected:
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot")
 	TObjectPtr<UItemBase> ItemReference;
+
+	UPROPERTY()
+	TObjectPtr<UInventorySubmenu> SubMenuReference;
 
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
 	TObjectPtr<UBorder> ItemBorder;
@@ -49,8 +41,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
 	TObjectPtr<UTextBlock> ItemQuantity;
 
-	UPROPERTY()
-	TObjectPtr<UInventorySubmenu> SubMenuReference;
+	UPROPERTY(EditDefaultsOnly, Category="Inventory Slot")
+	TSubclassOf<UDragItemVisual> DragItemVisualClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="Inventory Slot")
+	TSubclassOf<UInventoryTooltip> ToolTipClass;
+
 
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;

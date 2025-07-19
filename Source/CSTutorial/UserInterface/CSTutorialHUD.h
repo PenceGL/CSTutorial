@@ -6,9 +6,9 @@
 
 class UMainMenu;
 class UInteractionWidget;
-class UInventorySubmenu;
 class UAmountWidget;
 class AContainer;
+class ACSTutorialCharacter;
 struct FInteractableData;
 
 UCLASS()
@@ -21,12 +21,6 @@ public:
 	// PROPERTIES & VARIABLES
 	//======================================================================================
 	bool bIsMenuVisible;
-
-	UPROPERTY()
-	TObjectPtr<UInventorySubmenu> InventorySubMenu;
-
-	UPROPERTY()
-	TObjectPtr<UAmountWidget> AmountWidget;
 	
 	//======================================================================================
 	// FUNCTIONS
@@ -62,12 +56,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> CrosshairWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UInventorySubmenu> InventorySubMenuClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UAmountWidget> AmountWidgetClass;
 	
 	UPROPERTY()
 	TObjectPtr<UMainMenu> MainMenuWidget;

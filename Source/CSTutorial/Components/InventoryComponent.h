@@ -141,5 +141,5 @@ protected:
 	int32 CalculateWeightAddAmount(const UItemBase* ItemIn, int32 RequestedAddAmount) const;
 	int32 CalculateNumberForFullStack(const UItemBase* StackableItem, int32 InitialRequestedAddAmount) const;
 
-	void AddNewItem(UItemBase* Item, const int32 AmountToAdd);
+	void AddNewItem(const UItemBase* Item, const int32 AmountToAdd);
 };

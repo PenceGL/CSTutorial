@@ -5,6 +5,7 @@
 #include "MainMenu.generated.h"
 
 class ACSTutorialCharacter;
+class UInventoryPanel;
 
 UCLASS()
 class CSTUTORIAL_API UMainMenu : public UUserWidget
@@ -14,6 +15,9 @@ class CSTUTORIAL_API UMainMenu : public UUserWidget
 public:
 	UPROPERTY()
 	TObjectPtr<ACSTutorialCharacter> PlayerCharacter;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UInventoryPanel> PlayerInventory;
 
 protected:
 	virtual void NativeOnInitialized() override;

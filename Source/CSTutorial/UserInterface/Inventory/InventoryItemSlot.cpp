@@ -1,9 +1,10 @@
 // game
 #include "UserInterface/Inventory/InventoryItemSlot.h"
-#include "Items/ItemBase.h"
 #include "UserInterface/Inventory/InventoryTooltip.h"
 #include "UserInterface/Inventory/DragItemVisual.h"
 #include "UserInterface/Inventory/ItemDragDropOperation.h"
+#include "UserInterface/Inventory/InventorySubmenu.h"
+#include "Items/ItemBase.h"
 
 // engine
 #include "Components/Border.h"
@@ -69,7 +70,47 @@ FReply UInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, 
 		return Reply.Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
 	}
 
-	// submenu on right click will happen here
+	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	{
+		if (IsValid(SubMenuReference))
+		{
+			float MouseX;
+			float MouseY;
+			if (!GetOwningPlayer()->GetMousePosition(MouseX, MouseY))
+			{
+				UE_LOG(LogTemp, Error, L"%s: GetOwningPlayer()->GetMousePosition() returned false!",
+				       *FString(__FUNCTION__));
+			}
+			const FVector2D WidgetPosition{MouseX, MouseY};
+
+			SubMenuReference->SetPositionInViewport(WidgetPosition);
+
+			// spawn the submenu just very slightly to the left and above the mouse pointer
+			// so that it's easier to move the mouse down into it
+			SubMenuReference->SetAlignmentInViewport(FVector2D{0.05, 0.05});
+
+			if (!SubMenuReference->bSubMenuActive)
+			{
+				SubMenuReference->OriginatingItemSlot = this;
+				// hide any widgets that might have been previously spawned by the submenu, such as the splitter
+				SubMenuReference->HideSubmenuWidgets();
+				SubMenuReference->SetVisibility(ESlateVisibility::Visible);
+			}
+			else if (SubMenuReference->bSubMenuActive)
+			{
+				// if the submenu is already active, then link it to the new item slot data
+				SubMenuReference->OriginatingItemSlot = this;
+				SubMenuReference->HideSubmenuWidgets();
+			}
+
+			// configure the submenu buttons for the item in this item slot
+			SubMenuReference->ConfigureSubmenuButtons();
+
+			return Reply.Handled();
+		}
+
+		return Reply.Unhandled();
+	}
 
 	return Reply.Unhandled();
 }

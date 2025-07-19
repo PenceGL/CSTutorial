@@ -363,7 +363,7 @@ void ACSTutorialCharacter::CameraTimelineEnd() const
 	}
 }
 
-void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop)
+void ACSTutorialCharacter::DropItem(const TObjectPtr<UItemBase>& ItemToDrop)
 {
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;

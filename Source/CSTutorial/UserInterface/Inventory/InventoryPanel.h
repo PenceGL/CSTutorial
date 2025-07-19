@@ -18,11 +18,8 @@ class CSTUTORIAL_API UInventoryPanel : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void LinkSubmenuWidget();
+	bool bIsLinkedToInventory;
 	
-	UFUNCTION()
-	void RefreshInventory();
-
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UWrapBox> InventoryWrapBox;
 	
@@ -31,18 +28,24 @@ public:
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> CapacityInfo;
-
-	UPROPERTY()
-	TObjectPtr<ACSTutorialCharacter> PlayerCharacter;
 	
 	UPROPERTY()
 	TObjectPtr<UInventoryComponent> InventoryReference;
 
 	UPROPERTY()
-	TObjectPtr<UInventorySubmenu> SubMenuReference;
+	TObjectPtr<UInventorySubmenu> SubMenu;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventoryItemSlot> InventorySlotClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UInventorySubmenu> InventorySubMenuClass;
+	
+	UFUNCTION()
+	void RefreshInventory();
+
+	void LinkToInventory(const TObjectPtr<UInventoryComponent>& InputInventory, const TObjectPtr<ACSTutorialCharacter>& InputCharacter = nullptr);
+	void UnlinkFromInventory();
 	
 protected:
 

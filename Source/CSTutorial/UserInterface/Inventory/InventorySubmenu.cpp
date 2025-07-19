@@ -13,6 +13,19 @@ void UInventorySubmenu::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+	if (AmountWidgetClass)
+	{
+		AmountWidget = CreateWidget<UAmountWidget>(this, AmountWidgetClass);
+		AmountWidget->AddToViewport(7);
+		AmountWidget->SetVisibility(ESlateVisibility::Collapsed);
+
+		AmountWidget->OnValueConfirm.BindUObject(this, &UInventorySubmenu::SplitConfirmed);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, L"%s: AmountWidgetClass was null!", *FString(__FUNCTION__));
+	}
+
 	UseButton->OnClicked.AddDynamic(this, &UInventorySubmenu::UseButtonClicked);
 	ExamineButton->OnClicked.AddDynamic(this, &UInventorySubmenu::ExamineButtonClicked);
 	DropButton->OnClicked.AddDynamic(this, &UInventorySubmenu::DropButtonClicked);
@@ -20,6 +33,8 @@ void UInventorySubmenu::NativeOnInitialized()
 
 	bSubMenuActive = false;
 	bSplitInProgress = false;
+
+	
 }
 
 void UInventorySubmenu::NativeConstruct()
@@ -27,26 +42,17 @@ void UInventorySubmenu::NativeConstruct()
 	Super::NativeConstruct();
 }
 
-void UInventorySubmenu::SetAmountWidgetReference(const TObjectPtr<UAmountWidget> AmountWidgetIn)
-{
-	AmountWidgetReference = AmountWidgetIn;
-	if (AmountWidgetReference)
-	{
-		AmountWidgetReference->OnValueConfirm.BindUObject(this, &UInventorySubmenu::SplitConfirmed);
-	}
-}
-
 void UInventorySubmenu::HideSubmenuWidgets() const
 {
-	if (AmountWidgetReference)
+	if (AmountWidget)
 	{
-		AmountWidgetReference->SetVisibility(ESlateVisibility::Collapsed);
+		AmountWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
 void UInventorySubmenu::ConfigureSubmenuButtons()
 {
-	if (OriginatingItemSlot->GetItemReference()->NumericData.bIsStackable && 
+	if (OriginatingItemSlot->GetItemReference()->NumericData.bIsStackable &&
 		OriginatingItemSlot->GetItemReference()->Quantity > 1)
 	{
 		SplitButton->SetRenderOpacity(1.0);
@@ -64,22 +70,24 @@ void UInventorySubmenu::ConfigureSubmenuButtons()
 
 void UInventorySubmenu::UseButtonClicked()
 {
+	// TODO
 }
 
 void UInventorySubmenu::ExamineButtonClicked()
 {
+	// TODO
 }
 
 void UInventorySubmenu::DropButtonClicked()
 {
 	if (PlayerCharacter)
 	{
+		UE_LOG(LogTemp, Error, L"%s: Calling DropItem with %s", *FString(__FUNCTION__), *OriginatingItemSlot->GetItemReference()->TextData.Name.ToString());
 		PlayerCharacter->DropItem(OriginatingItemSlot->GetItemReference());
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, L"%s: DropItem could not be completed, player character reference was nullptr!",
-		       *FString(__FUNCTION__));
+		UE_LOG(LogTemp, Error, L"%s: DropItem could not be completed, player character reference was nullptr!", *FString(__FUNCTION__));
 	}
 
 	CloseSubmenu();
@@ -87,13 +95,13 @@ void UInventorySubmenu::DropButtonClicked()
 
 void UInventorySubmenu::SplitButtonClicked()
 {
-	if (bItemCanBeSplit && AmountWidgetReference)
+	if (bItemCanBeSplit && AmountWidget)
 	{
 		bSplitInProgress = true;
 		CloseSubmenu();
 
-		AmountWidgetReference->SetHeaderText(FText::FromString("Amount to split:"));
-		AmountWidgetReference->SetItemReference(OriginatingItemSlot->GetItemReference());
+		AmountWidget->SetHeaderText(FText::FromString("Amount to split:"));
+		AmountWidget->SetItemReference(OriginatingItemSlot->GetItemReference());
 
 		float MouseX;
 		float MouseY;
@@ -104,9 +112,9 @@ void UInventorySubmenu::SplitButtonClicked()
 		}
 		const FVector2D WidgetPosition{MouseX, MouseY};
 
-		AmountWidgetReference->SetPositionInViewport(WidgetPosition);
-		AmountWidgetReference->SetAlignmentInViewport(FVector2D{0.5, 0.5});
-		AmountWidgetReference->SetVisibility(ESlateVisibility::Visible);
+		AmountWidget->SetPositionInViewport(WidgetPosition);
+		AmountWidget->SetAlignmentInViewport(FVector2D{0.5, 0.5});
+		AmountWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -121,9 +129,7 @@ void UInventorySubmenu::SplitConfirmed(const int32 AmountToSplit)
 	{
 		if (PlayerCharacter)
 		{
-			PlayerCharacter->GetInventory()->SplitExistingStack(
-				OriginatingItemSlot->GetItemReference(),
-				AmountToSplit);
+			PlayerCharacter->GetInventory()->SplitExistingStack(OriginatingItemSlot->GetItemReference(), AmountToSplit);
 		}
 		else
 		{
@@ -131,6 +137,7 @@ void UInventorySubmenu::SplitConfirmed(const int32 AmountToSplit)
 			       *FString(__FUNCTION__));
 		}
 	}
+	bSplitInProgress = false;
 }
 
 void UInventorySubmenu::CloseSubmenu()

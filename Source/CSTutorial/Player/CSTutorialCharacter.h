@@ -41,22 +41,6 @@ public:
 	//---------------------------------------------------------
 	ACSTutorialCharacter();
 	
-	/** Handles move inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
-	virtual void DoMove(float Right, float Forward);
-	
-	/** Handles look inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
-	virtual void DoLook(float Yaw, float Pitch);
-
-	/** Handles jump pressed inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
-	virtual void DoJumpStart();
-
-	/** Handles jump pressed inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
-	virtual void DoJumpEnd();
-
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
@@ -64,11 +48,12 @@ public:
 	//---------------------------------------------------------
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TH_TimedInteraction); }
 
-	FORCEINLINE UInventoryComponent* GetInventory() const { return PlayerInventory; };
+	FORCEINLINE TObjectPtr<UInventoryComponent> GetInventory() const { return PlayerInventory; }
+	FORCEINLINE ACSTutorialHUD* GetHUD() const { return HUD; }
 
 	void UpdateInteractionWidget() const;
 
-	void DropItem(UItemBase* ItemToDrop);
+	void DropItem(const TObjectPtr<UItemBase>& ItemToDrop);
 
 
 protected:
@@ -166,6 +151,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="PlayerCharacter | Aiming")
 	TObjectPtr<UCurveFloat> AimingCameraCurve;
+
 	
 //======================================================================================
 // FUNCTIONS
@@ -180,6 +166,22 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+	
+	/** Handles move inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
+	virtual void DoMove(float Right, float Forward);
+	
+	/** Handles look inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
+	virtual void DoLook(float Yaw, float Pitch);
+
+	/** Handles jump pressed inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
+	virtual void DoJumpStart();
+
+	/** Handles jump pressed inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
+	virtual void DoJumpEnd();
 	
 	// CSTutorial game functions
 	//---------------------------------------------------------

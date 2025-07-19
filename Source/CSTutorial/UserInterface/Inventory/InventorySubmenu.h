@@ -5,6 +5,7 @@
 #include "InventorySubmenu.generated.h"
 
 class ACSTutorialCharacter;
+class UInventoryComponent;
 class UInventoryItemSlot;
 class UAmountWidget;
 class UButton;
@@ -22,17 +23,18 @@ public:
 	// PROPERTIES & VARIABLES
 	//#############################################################################
 	UPROPERTY()
-	TObjectPtr<ACSTutorialCharacter> PlayerCharacter;
+	TObjectPtr<UInventoryComponent> LinkedInventory;
 	UPROPERTY()
 	TObjectPtr<UInventoryItemSlot> OriginatingItemSlot;
+	UPROPERTY()
+	TObjectPtr<ACSTutorialCharacter> PlayerCharacter;
+
+	bool bSubMenuActive;
 
 	//#############################################################################
 	// FUNCTIONS
 	//#############################################################################
-	FORCEINLINE bool SubMenuIsActive() const { return bSubMenuActive; };
-	FORCEINLINE void SetSubmenuActive(const bool NewState) { bSubMenuActive = NewState; };
 	FORCEINLINE bool SplitIsInProgress() const { return bSplitInProgress; };
-	FORCEINLINE void SetAmountWidgetReference(const TObjectPtr<UAmountWidget> AmountWidgetIn);
 	
 	void HideSubmenuWidgets() const;
 	void ConfigureSubmenuButtons();
@@ -41,7 +43,6 @@ protected:
 	//#############################################################################
 	// PROPERTIES & VARIABLES
 	//#############################################################################
-	bool bSubMenuActive;
 	bool bSplitInProgress;
 	bool bItemCanBeSplit;
 	
@@ -55,7 +56,10 @@ protected:
 	TObjectPtr<UButton> SplitButton;
 
 	UPROPERTY()
-	TObjectPtr<UAmountWidget> AmountWidgetReference;
+	TObjectPtr<UAmountWidget> AmountWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UAmountWidget> AmountWidgetClass;
 
 	//#############################################################################
 	// FUNCTIONS

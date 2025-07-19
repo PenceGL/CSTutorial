@@ -1,11 +1,9 @@
 #include "UserInterface/CSTutorialHUD.h"
 #include "UserInterface/MainMenu.h"
 #include "UserInterface/Interaction/InteractionWidget.h"
-#include "UserInterface/Inventory/AmountWidget.h"
 // #include "UserInterface/Inventory/ContainerInterface.h"
-#include "UserInterface/Inventory/InventorySubMenu.h"
 
-ACSTutorialHUD::ACSTutorialHUD()
+ACSTutorialHUD::ACSTutorialHUD() : bIsMenuVisible(false)
 {
 }
 
@@ -13,16 +11,6 @@ void ACSTutorialHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	CreateGameWidgets();
-	
-	if (InventorySubMenu && AmountWidget)
-	{
-		InventorySubMenu->SetAmountWidgetReference(AmountWidget);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, L"%s: AmountWidget was null when attempting to link it to the InventorySubMenu!",
-			   *FString(__FUNCTION__));
-	}
 }
 
 void ACSTutorialHUD::DisplayMenu()
@@ -135,7 +123,8 @@ void ACSTutorialHUD::CreateGameWidgets()
 	if (InteractionWidgetClass)
 	{
 		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
-		InteractionWidget->AddToViewport(-1);
+		// interaction widget doesn't need to be above menus
+		InteractionWidget->AddToViewport(0);
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	else
@@ -146,33 +135,12 @@ void ACSTutorialHUD::CreateGameWidgets()
 	if (CrosshairWidgetClass)
 	{
 		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), CrosshairWidgetClass);
-		CrosshairWidget->AddToViewport();
+		// crosshair is conditional and always in center of screen, so it won't conflict with interaction widget
+		CrosshairWidget->AddToViewport(0);
 		CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, L"%s: CrosshairWidgetClass was null!", *FString(__FUNCTION__));
-	}
-
-	if (AmountWidgetClass)
-	{
-		AmountWidget = CreateWidget<UAmountWidget>(GetWorld(), AmountWidgetClass);
-		AmountWidget->AddToViewport(4);
-		AmountWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, L"%s: AmountWidgetClass was null!", *FString(__FUNCTION__));
-	}
-
-	if (InventorySubMenuClass)
-	{
-		InventorySubMenu = CreateWidget<UInventorySubmenu>(GetWorld(), InventorySubMenuClass);
-		InventorySubMenu->AddToViewport(3);
-		InventorySubMenu->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, L"%s: InventorySubMenuClass was null!", *FString(__FUNCTION__));
 	}
 }
