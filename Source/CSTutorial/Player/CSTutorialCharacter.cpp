@@ -5,6 +5,7 @@
 #include "Components/InventoryComponent.h"
 #include "CSTutorialPlayerController.h"
 #include "Interfaces/InteractionInterface.h"
+#include "World/Container.h"
 #include "World/Pickup.h"
 
 // engine
@@ -18,7 +19,6 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-// #include "InputActionValue.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -299,7 +299,26 @@ void ACSTutorialCharacter::Interact()
 
 	if (IsValid(InteractionTarget.GetObject()))
 	{
-		InteractionTarget->Interact(this);
+		switch (InteractionTarget->InteractableData.InteractableType)
+		{
+		case EInteractableType::Pickup:
+		case EInteractableType::NonPlayerCharacter:
+		case EInteractableType::Device:
+		case EInteractableType::Toggle:
+			{
+				InteractionTarget->Interact(this);
+			}
+			break;
+		case EInteractableType::Container:
+			{
+				HUD->SetTargetContainer(Cast<AContainer>(InteractionTarget.GetObject()), this);
+				InteractionTarget->Interact(this);
+			}
+			break;
+		default:
+			{
+			}
+		}
 	}
 }
 
@@ -315,7 +334,7 @@ void ACSTutorialCharacter::ToggleMenu()
 {
 	HUD->ToggleMenu();
 
-	if (HUD->bIsMenuVisible)
+	if (HUD->bMainMenuOpen)
 	{
 		StopAiming();
 	}
@@ -323,7 +342,7 @@ void ACSTutorialCharacter::ToggleMenu()
 
 void ACSTutorialCharacter::Aim()
 {
-	if (!HUD->bIsMenuVisible)
+	if (!HUD->bMainMenuOpen)
 	{
 		bAiming = true;
 		bUseControllerRotationYaw = true;
@@ -382,6 +401,10 @@ void ACSTutorialCharacter::DropItem(const TObjectPtr<UItemBase>& ItemToDrop)
 	APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
 	Pickup->InitializeDrop(ItemToDrop);
 	PlayerInventory->RemoveInstanceOfItem(ItemToDrop);
+}
+
+void ACSTutorialCharacter::ExitContainerRadius()
+{
 }
 
 void ACSTutorialCharacter::Move(const FInputActionValue& Value)

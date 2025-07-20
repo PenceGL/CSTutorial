@@ -100,7 +100,6 @@ void UInventoryPanel::RefreshInventory()
 		for (UItemBase* const& InventoryItem : InventoryReference->GetInventoryContents())
 		{
 			UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this, InventorySlotClass);
-
 			ItemSlot->InternalItemReference = InventoryItem;
 			// let the item slot have access to the panel it is in so that
 			// it can handle stack merging operations caused by drag & drop

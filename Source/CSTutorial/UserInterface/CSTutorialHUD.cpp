@@ -1,9 +1,11 @@
 #include "UserInterface/CSTutorialHUD.h"
 #include "UserInterface/MainMenu.h"
 #include "UserInterface/Interaction/InteractionWidget.h"
-// #include "UserInterface/Inventory/ContainerInterface.h"
+#include "UserInterface/Inventory/ContainerInterface.h"
 
-ACSTutorialHUD::ACSTutorialHUD() : bIsMenuVisible(false)
+ACSTutorialHUD::ACSTutorialHUD() :
+	bMainMenuOpen(false),
+	bContainerInterfaceOpen(false)
 {
 }
 
@@ -17,7 +19,7 @@ void ACSTutorialHUD::DisplayMenu()
 {
 	if (MainMenuWidget)
 	{
-		bIsMenuVisible = true;
+		bMainMenuOpen = true;
 		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
@@ -26,17 +28,21 @@ void ACSTutorialHUD::HideMenu()
 {
 	if (MainMenuWidget)
 	{
-		bIsMenuVisible = false;
+		bMainMenuOpen = false;
 		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
 void ACSTutorialHUD::ToggleMenu()
 {
-	if (bIsMenuVisible)
+	if (bContainerInterfaceOpen)
+	{
+		HideContainerInterface(false);
+	}
+
+	if (bMainMenuOpen)
 	{
 		HideMenu();
-
 		const FInputModeGameOnly InputMode;
 		GetOwningPlayerController()->SetInputMode(InputMode);
 		GetOwningPlayerController()->SetShowMouseCursor(false);
@@ -95,21 +101,63 @@ void ACSTutorialHUD::UpdateInteractionWidget(const FInteractableData* Interactab
 	}
 }
 
-void ACSTutorialHUD::SetTargetContainer(const TObjectPtr<AContainer> TargetContainer, const TObjectPtr<ACSTutorialCharacter> PlayerCharacter)
+void ACSTutorialHUD::SetTargetContainer(const TObjectPtr<AContainer>& TargetContainer,
+                                        const TObjectPtr<ACSTutorialCharacter>& PlayerCharacter)
 {
+	if (ContainerInterface)
+	{
+		ContainerInterface->LinkContainerInterface(TargetContainer, PlayerCharacter);
+
+		if (!bContainerInterfaceOpen)
+		{
+			if (bMainMenuOpen)
+			{
+				ToggleMenu();
+			}
+
+			ShowContainerInterface(true);
+		}
+	}
 }
 
 void ACSTutorialHUD::ClearTargetContainer()
 {
+	HideContainerInterface(true);
+	ContainerInterface->ClearTargetContainer();
 }
 
 void ACSTutorialHUD::ShowContainerInterface(const bool bModifyInputMode)
 {
+	if (ContainerInterface)
+	{
+		bContainerInterfaceOpen = true;
+		ContainerInterface->SetVisibility(ESlateVisibility::Visible);
+
+		if (bModifyInputMode)
+		{
+			const FInputModeGameAndUI InputMode;
+			GetOwningPlayerController()->SetInputMode(InputMode);
+			GetOwningPlayerController()->SetShowMouseCursor(true);
+		}
+	}
 }
 
 void ACSTutorialHUD::HideContainerInterface(const bool bModifyInputMode)
 {
+	if (ContainerInterface)
+	{
+		bContainerInterfaceOpen = false;
+		ContainerInterface->SetVisibility(ESlateVisibility::Collapsed);
+
+		if (bModifyInputMode)
+		{
+			const FInputModeGameOnly InputMode;
+			GetOwningPlayerController()->SetInputMode(InputMode);
+			GetOwningPlayerController()->SetShowMouseCursor(false);
+		}
+	}
 }
+
 
 void ACSTutorialHUD::CreateGameWidgets()
 {

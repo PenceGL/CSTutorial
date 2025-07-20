@@ -8,6 +8,7 @@ class UMainMenu;
 class UInteractionWidget;
 class UAmountWidget;
 class AContainer;
+class UContainerInterface;
 class ACSTutorialCharacter;
 struct FInteractableData;
 
@@ -20,7 +21,8 @@ public:
 	//======================================================================================
 	// PROPERTIES & VARIABLES
 	//======================================================================================
-	bool bIsMenuVisible;
+	bool bMainMenuOpen;
+	bool bContainerInterfaceOpen;
 
 	//======================================================================================
 	// FUNCTIONS
@@ -39,7 +41,7 @@ public:
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
 	TObjectPtr<UInteractionWidget> GetInteractionWidget() { return InteractionWidget; }
 
-	void SetTargetContainer(const TObjectPtr<AContainer> TargetContainer, const TObjectPtr<ACSTutorialCharacter> PlayerCharacter);
+	void SetTargetContainer(const TObjectPtr<AContainer>& TargetContainer, const TObjectPtr<ACSTutorialCharacter>& PlayerCharacter);
 	void ClearTargetContainer();
 	void ShowContainerInterface(const bool bModifyInputMode = false);
 	void HideContainerInterface(const bool bModifyInputMode = false);
@@ -57,6 +59,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> CrosshairWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UContainerInterface> ContainerInterfaceClass;
+
 	UPROPERTY()
 	TObjectPtr<UMainMenu> MainMenuWidget;
 
@@ -65,6 +70,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> CrosshairWidget;
+
+	UPROPERTY()
+	TObjectPtr<UContainerInterface> ContainerInterface;
 
 	//======================================================================================
 	// FUNCTIONS

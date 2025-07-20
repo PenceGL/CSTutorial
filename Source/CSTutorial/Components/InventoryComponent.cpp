@@ -79,8 +79,6 @@ void UInventoryComponent::RemoveInstanceOfItem(const TObjectPtr<UItemBase>& Item
 
 void UInventoryComponent::MergeItems(const TObjectPtr<UItemBase>& TargetItem, const TObjectPtr<UItemBase>& SourceItem)
 {
-	// calculate how many actually need to be dropped to fill the stack
-	// if the stack won't be filled, then the whole quantity can shift
 	const int32 AmountToShift = CalculateNumberForFullStack(TargetItem, SourceItem->Quantity);
 
 	TargetItem->SetQuantity(TargetItem->Quantity + AmountToShift);
