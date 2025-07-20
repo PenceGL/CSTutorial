@@ -44,7 +44,7 @@ void UInventoryPanel::LinkToInventory(const TObjectPtr<UInventoryComponent>& Inp
 			SubMenu->LinkedInventory = InputInventory;
 
 			// bind the delegate so that changes in the linked inventory call RefreshInventory
-			this->InventoryReference->OnInventoryUpdated.AddUObject(this, &UInventoryPanel::RefreshInventory);
+			this->InventoryReference->InventoryWasUpdated.AddUObject(this, &UInventoryPanel::RefreshInventory);
 
 			UE_LOG(LogTemp, Log, L"%s: Input inventory %s successfully linked to %s.",
 			       *FString(__FUNCTION__),
@@ -76,7 +76,7 @@ void UInventoryPanel::LinkToInventory(const TObjectPtr<UInventoryComponent>& Inp
 void UInventoryPanel::UnlinkFromInventory()
 {
 	// removes all functions from the delegate's invocation list that are bound to the specified UserObject
-	const uint8 DelegatesRemoved = InventoryReference->OnInventoryUpdated.RemoveAll(this);
+	const uint8 DelegatesRemoved = InventoryReference->InventoryWasUpdated.RemoveAll(this);
 	if (DelegatesRemoved > 0)
 	{
 		UE_LOG(LogTemp, Warning, L"%s: %d InventoryWasUpdated delegates unbound from %s.",
@@ -85,7 +85,9 @@ void UInventoryPanel::UnlinkFromInventory()
 
 	InventoryReference = nullptr;
 	if (IsValid(SubMenu))
+	{
 		SubMenu->BeginDestroy();
+	}
 	bIsLinkedToInventory = false;
 }
 
@@ -99,12 +101,15 @@ void UInventoryPanel::RefreshInventory()
 		{
 			UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this, InventorySlotClass);
 
-			ItemSlot->SetItemReference(InventoryItem);
+			ItemSlot->InternalItemReference = InventoryItem;
+			// let the item slot have access to the panel it is in so that
+			// it can handle stack merging operations caused by drag & drop
+			ItemSlot->OwningInventoryPanel = this;
 
 			if (IsValid(SubMenu))
 			{
 				// rely on submenu being null unless explicitly set by LinkSubmenuWidget()
-				ItemSlot->SetSubMenuReference(SubMenu);
+				ItemSlot->SubMenuReference = SubMenu;
 			}
 
 			InventoryWrapBox->AddChildToWrapBox(ItemSlot);
@@ -117,13 +122,13 @@ void UInventoryPanel::RefreshInventory()
 void UInventoryPanel::SetInfoText() const
 {
 	const FString WeightInfoValue{
-		FString::SanitizeFloat(InventoryReference->GetInventoryTotalWeight()) + "/"
-		+ FString::SanitizeFloat(InventoryReference->GetWeightCapacity())
+		FString::SanitizeFloat(InventoryReference->InventoryTotalWeight) + "/"
+		+ FString::SanitizeFloat(InventoryReference->MaxWeightCapacity)
 	};
 
 	const FString CapacityInfoValue{
 		FString::FromInt(InventoryReference->GetInventoryContents().Num()) + "/"
-		+ FString::FromInt(InventoryReference->GetSlotsCapacity())
+		+ FString::FromInt(InventoryReference->ItemSlotCount)
 	};
 
 	WeightInfo->SetText(FText::FromString(WeightInfoValue));

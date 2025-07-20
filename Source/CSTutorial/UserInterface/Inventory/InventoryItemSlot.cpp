@@ -4,6 +4,7 @@
 #include "UserInterface/Inventory/DragItemVisual.h"
 #include "UserInterface/Inventory/ItemDragDropOperation.h"
 #include "UserInterface/Inventory/InventorySubmenu.h"
+#include "UserInterface/Inventory/InventoryPanel.h"
 #include "Items/ItemBase.h"
 
 // engine
@@ -26,9 +27,9 @@ void UInventoryItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (ItemReference)
+	if (InternalItemReference)
 	{
-		switch (ItemReference->ItemQuality)
+		switch (InternalItemReference->ItemQuality)
 		{
 		case EItemQuality::Shoddy:
 			ItemBorder->SetBrushColor(FLinearColor::Gray);
@@ -48,11 +49,11 @@ void UInventoryItemSlot::NativeConstruct()
 		default: ;
 		}
 
-		ItemIcon->SetBrushFromTexture(ItemReference->AssetData.Icon);
+		ItemIcon->SetBrushFromTexture(InternalItemReference->AssetData.Icon);
 
-		if (ItemReference->NumericData.bIsStackable)
+		if (InternalItemReference->NumericData.bIsStackable)
 		{
-			ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity));
+			ItemQuantity->SetText(FText::AsNumber(InternalItemReference->Quantity));
 		}
 		else
 		{
@@ -128,15 +129,15 @@ void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const
 	if (DragItemVisualClass)
 	{
 		const TObjectPtr<UDragItemVisual> DragVisual = CreateWidget<UDragItemVisual>(this, DragItemVisualClass);
-		DragVisual->ItemIcon->SetBrushFromTexture(ItemReference->AssetData.Icon);
+		DragVisual->ItemIcon->SetBrushFromTexture(InternalItemReference->AssetData.Icon);
 		DragVisual->ItemBorder->SetBrushColor(ItemBorder->GetBrushColor());
 
-		ItemReference->NumericData.bIsStackable
-			? DragVisual->ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity))
+		InternalItemReference->NumericData.bIsStackable
+			? DragVisual->ItemQuantity->SetText(FText::AsNumber(InternalItemReference->Quantity))
 			: DragVisual->ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
 
 		UItemDragDropOperation* DragItemOperation = NewObject<UItemDragDropOperation>();
-		DragItemOperation->SourceItem = ItemReference;
+		DragItemOperation->SourceItem = InternalItemReference;
 
 		DragItemOperation->DefaultDragVisual = DragVisual;
 		DragItemOperation->Pivot = EDragPivot::TopLeft;
@@ -148,5 +149,21 @@ void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const
 bool UInventoryItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
                                       UDragDropOperation* InOperation)
 {
-	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+	const UItemDragDropOperation* ItemDragDrop = Cast<UItemDragDropOperation>(InOperation);
+
+	// only handle if not dropping the item on itself
+	if (ItemDragDrop->SourceItem != InternalItemReference)
+	{
+		// only take action if the same kind of item is being dropped onto this slot
+		if (ItemDragDrop->SourceItem->ID == InternalItemReference->ID)
+		{
+			// perform merge
+			OwningInventoryPanel->InventoryReference->MergeItems(InternalItemReference, ItemDragDrop->SourceItem);
+		
+			return true;
+			
+		}
+	}
+
+	return false;
 }

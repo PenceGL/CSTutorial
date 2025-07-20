@@ -33,8 +33,6 @@ void UInventorySubmenu::NativeOnInitialized()
 
 	bSubMenuActive = false;
 	bSplitInProgress = false;
-
-	
 }
 
 void UInventorySubmenu::NativeConstruct()
@@ -52,8 +50,8 @@ void UInventorySubmenu::HideSubmenuWidgets() const
 
 void UInventorySubmenu::ConfigureSubmenuButtons()
 {
-	if (OriginatingItemSlot->GetItemReference()->NumericData.bIsStackable &&
-		OriginatingItemSlot->GetItemReference()->Quantity > 1)
+	if (OriginatingItemSlot->InternalItemReference->NumericData.bIsStackable &&
+		OriginatingItemSlot->InternalItemReference->Quantity > 1)
 	{
 		SplitButton->SetRenderOpacity(1.0);
 		// SplitButton->SetIsEnabled(true);
@@ -82,8 +80,9 @@ void UInventorySubmenu::DropButtonClicked()
 {
 	if (PlayerCharacter)
 	{
-		UE_LOG(LogTemp, Error, L"%s: Calling DropItem with %s", *FString(__FUNCTION__), *OriginatingItemSlot->GetItemReference()->TextData.Name.ToString());
-		PlayerCharacter->DropItem(OriginatingItemSlot->GetItemReference());
+		UE_LOG(LogTemp, Error, L"%s: Calling DropItem with %s", *FString(__FUNCTION__),
+		       *OriginatingItemSlot->InternalItemReference->TextData.Name.ToString());
+		PlayerCharacter->DropItem(OriginatingItemSlot->InternalItemReference);
 	}
 	else
 	{
@@ -101,7 +100,7 @@ void UInventorySubmenu::SplitButtonClicked()
 		CloseSubmenu();
 
 		AmountWidget->SetHeaderText(FText::FromString("Amount to split:"));
-		AmountWidget->SetItemReference(OriginatingItemSlot->GetItemReference());
+		AmountWidget->SetItemReference(OriginatingItemSlot->InternalItemReference);
 
 		float MouseX;
 		float MouseY;
@@ -120,7 +119,7 @@ void UInventorySubmenu::SplitButtonClicked()
 
 void UInventorySubmenu::SplitConfirmed(const int32 AmountToSplit)
 {
-	if (AmountToSplit >= OriginatingItemSlot->GetItemReference()->Quantity || AmountToSplit == 0)
+	if (AmountToSplit >= OriginatingItemSlot->InternalItemReference->Quantity || AmountToSplit == 0)
 	{
 		UE_LOG(LogTemp, Warning, L"%s: No split performed. Split amount was equal to item quantity or 0.",
 		       *FString(__FUNCTION__));
@@ -129,7 +128,7 @@ void UInventorySubmenu::SplitConfirmed(const int32 AmountToSplit)
 	{
 		if (PlayerCharacter)
 		{
-			PlayerCharacter->GetInventory()->SplitExistingStack(OriginatingItemSlot->GetItemReference(), AmountToSplit);
+			PlayerCharacter->GetInventory()->SplitExistingStack(OriginatingItemSlot->InternalItemReference, AmountToSplit);
 		}
 		else
 		{
