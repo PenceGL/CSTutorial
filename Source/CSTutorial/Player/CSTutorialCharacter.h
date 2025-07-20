@@ -29,18 +29,18 @@ class ACSTutorialCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-//======================================================================================
-// PROPERTIES & VARIABLES
-//======================================================================================
+	//======================================================================================
+	// PROPERTIES & VARIABLES
+	//======================================================================================
 	bool bAiming;
 
-//======================================================================================
-// FUNCTIONS
-//======================================================================================
+	//======================================================================================
+	// FUNCTIONS
+	//======================================================================================
 	// default/built-in UE game template functions
 	//---------------------------------------------------------
 	ACSTutorialCharacter();
-	
+
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
@@ -55,11 +55,10 @@ public:
 
 	void DropItem(const TObjectPtr<UItemBase>& ItemToDrop);
 
-
 protected:
-//======================================================================================
-// PROPERTIES & VARIABLES
-//======================================================================================
+	//======================================================================================
+	// PROPERTIES & VARIABLES
+	//======================================================================================
 	// default/built-in UE game template properties
 	//---------------------------------------------------------
 	/** Camera boom positioning the camera behind the character */
@@ -69,7 +68,7 @@ protected:
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
+
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="PlayerCharacter | Input")
 	UInputAction* JumpAction;
@@ -85,12 +84,12 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="PlayerCharacter | Input")
 	UInputAction* MouseLookAction;
-	
+
 	// CSTutorial miscellaneous game properties
 	//---------------------------------------------------------
 	UPROPERTY()
 	TObjectPtr<ACSTutorialHUD> HUD;
-	
+
 	UPROPERTY()
 	TObjectPtr<ACSTutorialPlayerController> MainPlayerController;
 
@@ -110,7 +109,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCharacter | Input")
 	TObjectPtr<UInputAction> ToggleMenuAction;
-	
+
 	// interaction properties
 	//---------------------------------------------------------
 	UPROPERTY(EditAnywhere, Category = "PlayerCharacter | Interaction")
@@ -119,7 +118,7 @@ protected:
 	/** @brief Used to set the maximum distance at which actors can be interacted with while aiming.*/
 	UPROPERTY(EditAnywhere, Category = "PlayerCharacter | Interaction")
 	float AimingInteractionDistance;
-	
+
 	/** @brief Used to set the maximum distance at which actors can be interacted with while not aiming.*/
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCharacter | Interaction")
 	float DefaultInteractionDistance;
@@ -131,18 +130,18 @@ protected:
 	FCollisionObjectQueryParams InteractionObjectQueryParams;
 	// array that will be reused for storing any detected interactables
 	TArray<FHitResult> OutHits;
-	
+
 	/** @brief Timer handle used for a timed interaction (ex: hold button to turn valve, etc.).*/
 	FTimerHandle TH_TimedInteraction;
-	
+
 	/** @brief Timer handle used to control firing the line trace that checks for interactables.*/
 	FTimerHandle TH_InteractionCheck;
-	
+
 	// properties related to camera aiming transition
 	//---------------------------------------------------------
 	UPROPERTY(VisibleAnywhere, Category="PlayerCharacter | Aiming")
 	FVector DefaultCameraLocation;
-	
+
 	UPROPERTY(VisibleAnywhere, Category="PlayerCharacter | Aiming")
 	FVector AimingCameraLocation;
 
@@ -152,10 +151,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="PlayerCharacter | Aiming")
 	TObjectPtr<UCurveFloat> AimingCameraCurve;
 
-	
-//======================================================================================
-// FUNCTIONS
-//======================================================================================
+
+	//======================================================================================
+	// FUNCTIONS
+	//======================================================================================
 	// default/built-in UE game template functions
 	//---------------------------------------------------------
 	/** Initialize input action bindings */
@@ -166,11 +165,11 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-	
+
 	/** Handles move inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
 	virtual void DoMove(float Right, float Forward);
-	
+
 	/** Handles look inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
 	virtual void DoLook(float Yaw, float Pitch);
@@ -182,7 +181,7 @@ protected:
 	/** Handles jump pressed inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="PlayerCharacter | Input")
 	virtual void DoJumpEnd();
-	
+
 	// CSTutorial game functions
 	//---------------------------------------------------------
 	virtual void BeginPlay() override;

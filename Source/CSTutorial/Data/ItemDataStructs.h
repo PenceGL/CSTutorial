@@ -7,7 +7,7 @@
 UENUM()
 enum class EItemQuality : uint8
 {
-	Shoddy UMETA(DisplayName = "Shoddy"), 
+	Shoddy UMETA(DisplayName = "Shoddy"),
 	Common UMETA(DisplayName = "Common"),
 	Quality UMETA(DisplayName = "Quality"),
 	Masterwork UMETA(DisplayName = "Masterwork"),
@@ -30,16 +30,16 @@ USTRUCT()
 struct FItemStatistics
 {
 	GENERATED_USTRUCT_BODY()
-	
+
 	UPROPERTY(EditAnywhere)
 	float ArmorRating;
-	
+
 	UPROPERTY(EditAnywhere)
 	float DamageValue;
-	
+
 	UPROPERTY(EditAnywhere)
 	float RestorationAmount;
-	
+
 	UPROPERTY(EditAnywhere)
 	float SellValue;
 };
@@ -48,16 +48,16 @@ USTRUCT()
 struct FItemTextData
 {
 	GENERATED_USTRUCT_BODY()
-	
+
 	UPROPERTY(EditAnywhere)
 	FText Name;
-	
+
 	UPROPERTY(EditAnywhere)
 	FText Description;
-	
+
 	UPROPERTY(EditAnywhere)
 	FText InteractionText;
-	
+
 	UPROPERTY(EditAnywhere)
 	FText UsageText;
 };
@@ -69,10 +69,10 @@ struct FItemNumericData
 
 	UPROPERTY(EditAnywhere)
 	float Weight;
-	
+
 	UPROPERTY(EditAnywhere)
 	int32 MaxStackSize;
-	
+
 	UPROPERTY()
 	bool bIsStackable;
 };
@@ -81,7 +81,7 @@ USTRUCT()
 struct FItemAssetData
 {
 	GENERATED_USTRUCT_BODY()
-	
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UTexture2D> Icon;
 
@@ -99,19 +99,19 @@ struct FItemData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	EItemType ItemType;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	EItemQuality ItemQuality;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FItemStatistics ItemStatistics;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FItemTextData TextData;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FItemNumericData NumericData;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FItemAssetData AssetData;
 };

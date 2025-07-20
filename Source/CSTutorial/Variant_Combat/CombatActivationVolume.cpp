@@ -24,7 +24,8 @@ ACombatActivationVolume::ACombatActivationVolume()
 	Box->OnComponentBeginOverlap.AddDynamic(this, &ACombatActivationVolume::OnOverlap);
 }
 
-void ACombatActivationVolume::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ACombatActivationVolume::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                        int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// has a Character entered the volume?
 	ACharacter* PlayerCharacter = Cast<ACharacter>(OtherActor);
@@ -38,12 +39,11 @@ void ACombatActivationVolume::OnOverlap(UPrimitiveComponent* OverlappedComponent
 			for (AActor* CurrentActor : ActorsToActivate)
 			{
 				// is the referenced actor activatable?
-				if(ICombatActivatable* Activatable = Cast<ICombatActivatable>(CurrentActor))
+				if (ICombatActivatable* Activatable = Cast<ICombatActivatable>(CurrentActor))
 				{
 					Activatable->ActivateInteraction(PlayerCharacter);
 				}
 			}
 		}
 	}
-
 }

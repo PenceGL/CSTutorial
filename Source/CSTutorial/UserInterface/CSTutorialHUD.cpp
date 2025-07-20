@@ -53,13 +53,17 @@ void ACSTutorialHUD::ToggleMenu()
 void ACSTutorialHUD::ShowCrosshair() const
 {
 	if (IsValid(CrosshairWidget))
+	{
 		CrosshairWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void ACSTutorialHUD::HideCrosshair() const
 {
 	if (IsValid(CrosshairWidget))
+	{
 		CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void ACSTutorialHUD::ShowInteractionWidget() const
@@ -111,7 +115,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 {
 	if (MainMenuClass)
 	{
-		MainMenuWidget = CreateWidget<UMainMenu>(this, MainMenuClass);
+		MainMenuWidget = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
 		MainMenuWidget->AddToViewport(5);
 		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -122,7 +126,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 
 	if (InteractionWidgetClass)
 	{
-		InteractionWidget = CreateWidget<UInteractionWidget>(this, InteractionWidgetClass);
+		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
 		// interaction widget doesn't need to be above menus
 		InteractionWidget->AddToViewport(0);
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
@@ -134,7 +138,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 
 	if (CrosshairWidgetClass)
 	{
-		CrosshairWidget = CreateWidget<UUserWidget>(this, CrosshairWidgetClass);
+		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), CrosshairWidgetClass);
 		// crosshair is conditional and always in center of screen, so it won't conflict with interaction widget
 		CrosshairWidget->AddToViewport(0);
 		CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);

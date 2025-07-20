@@ -14,14 +14,12 @@ UCLASS(abstract)
 class ACSTutorialPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
-protected:
 
+protected:
 	/** Input Mapping Contexts */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input", meta = (AllowPrivateAccess = "true"))
 	TArray<UInputMappingContext*> DefaultMappingContexts;
 
 	/** Input mapping context setup */
 	virtual void SetupInputComponent() override;
-
 };

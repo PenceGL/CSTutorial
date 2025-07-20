@@ -15,13 +15,13 @@ UCLASS()
 class CSTUTORIAL_API ACSTutorialHUD : public AHUD
 {
 	GENERATED_BODY()
-	
+
 public:
 	//======================================================================================
 	// PROPERTIES & VARIABLES
 	//======================================================================================
 	bool bIsMenuVisible;
-	
+
 	//======================================================================================
 	// FUNCTIONS
 	//======================================================================================
@@ -33,7 +33,7 @@ public:
 
 	void ShowCrosshair() const;
 	void HideCrosshair() const;
-	
+
 	void ShowInteractionWidget() const;
 	void HideInteractionWidget() const;
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
@@ -43,7 +43,7 @@ public:
 	void ClearTargetContainer();
 	void ShowContainerInterface(const bool bModifyInputMode = false);
 	void HideContainerInterface(const bool bModifyInputMode = false);
-	
+
 protected:
 	//======================================================================================
 	// PROPERTIES & VARIABLES
@@ -56,7 +56,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UUserWidget> CrosshairWidgetClass;
-	
+
 	UPROPERTY()
 	TObjectPtr<UMainMenu> MainMenuWidget;
 
@@ -65,7 +65,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> CrosshairWidget;
-	
+
 	//======================================================================================
 	// FUNCTIONS
 	//======================================================================================

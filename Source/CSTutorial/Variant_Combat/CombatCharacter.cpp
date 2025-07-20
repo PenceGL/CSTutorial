@@ -195,7 +195,6 @@ void ACombatCharacter::ComboAttack()
 			AnimInstance->Montage_SetEndDelegate(OnAttackMontageEnded, ComboAttackMontage);
 		}
 	}
-
 }
 
 void ACombatCharacter::ChargedAttack()
@@ -348,7 +347,6 @@ void ACombatCharacter::ApplyDamage(float Damage, AActor* DamageCauser, const FVe
 		// pass control to BP to play effects, etc.
 		ReceivedDamage(ActualDamage, DamageLocation, DamageImpulse.GetSafeNormal());
 	}
-
 }
 
 void ACombatCharacter::HandleDeath()
@@ -380,7 +378,7 @@ void ACombatCharacter::RespawnCharacter()
 	Destroy();
 }
 
-float ACombatCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float ACombatCharacter::TakeDamage(float Damage, const struct FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// only process damage if the character is still alive
 	if (CurrentHP <= 0.0f)
@@ -485,4 +483,3 @@ void ACombatCharacter::NotifyControllerChanged()
 		PC->SetRespawnTransform(GetActorTransform());
 	}
 }
-

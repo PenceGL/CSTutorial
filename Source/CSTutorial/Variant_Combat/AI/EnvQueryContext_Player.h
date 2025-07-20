@@ -14,9 +14,8 @@ UCLASS()
 class UEnvQueryContext_Player : public UEnvQueryContext
 {
 	GENERATED_BODY()
-	
-public:
 
+public:
 	/** Provides the context locations or actors for this EnvQuery */
 	virtual void ProvideContext(FEnvQueryInstance& QueryInstance, FEnvQueryContextData& ContextData) const override;
 };

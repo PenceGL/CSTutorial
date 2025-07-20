@@ -13,7 +13,7 @@ UCLASS()
 class CSTUTORIAL_API UItemDragDropOperation : public UDragDropOperation
 {
 	GENERATED_BODY()
-	
+
 public:
 	UPROPERTY()
 	TObjectPtr<UItemBase> SourceItem;

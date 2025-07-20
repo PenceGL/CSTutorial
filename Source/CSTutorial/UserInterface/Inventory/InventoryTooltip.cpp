@@ -8,7 +8,7 @@ void UInventoryTooltip::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (const UItemBase* ItemBeingHovered = InventorySlotBeingHovered->GetItemReference())
+	if (const UItemBase* ItemBeingHovered = InventorySlotBeingHovered->InternalItemReference)
 	{
 		switch (ItemBeingHovered->ItemQuality)
 		{
@@ -71,14 +71,14 @@ void UInventoryTooltip::NativeConstruct()
 
 		const FString WeightInfo =
 			{"Weight: " + FString::SanitizeFloat(ItemBeingHovered->GetItemStackWeight())};
-		
+
 		StackWeight->SetText(FText::FromString(WeightInfo));
 
 		if (ItemBeingHovered->NumericData.bIsStackable)
 		{
 			const FString StackInfo =
 				{"Max stack size: " + FString::FromInt(ItemBeingHovered->NumericData.MaxStackSize)};
-			
+
 			MaxStackSize->SetText(FText::FromString(StackInfo));
 		}
 		else

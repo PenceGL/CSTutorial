@@ -11,8 +11,8 @@ UCLASS()
 class CSTUTORIAL_API AInterfaceTestActor : public AActor, public IInteractionInterface
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AInterfaceTestActor();
 
@@ -22,13 +22,13 @@ protected:
 
 	UPROPERTY(EditInstanceOnly, Category = "Test Actor")
 	FInteractableData InstanceInteractableData;
-	
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	virtual void BeginFocus() override;
 	virtual void EndFocus() override;
 	virtual void BeginInteract() override;

@@ -2,22 +2,30 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/InteractionInterface.h"
 #include "Container.generated.h"
 
 UCLASS()
-class CSTUTORIAL_API AContainer : public AActor
+class CSTUTORIAL_API AContainer : public AActor, public IInteractionInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
 	AContainer();
+	virtual void BeginFocus() override;
+	virtual void EndFocus() override;
+	virtual void Interact(ACSTutorialCharacter* PlayerCharacter) override;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	//#############################################################################
+	// PROPERTIES & VARIABLES
+	//#############################################################################
+	UPROPERTY(EditInstanceOnly, Category = "Container | Mesh")
+	TObjectPtr<UStaticMeshComponent> ContainerMesh;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditInstanceOnly, Category = "Container | Initialization")
+	FInteractableData InstanceInteractableData;
+
+	virtual void BeginPlay() override;
 };

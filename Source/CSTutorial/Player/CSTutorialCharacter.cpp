@@ -158,7 +158,7 @@ void ACSTutorialCharacter::Tick(float DeltaSeconds)
 		// percentage of completion = timer value / interaction duration
 		const float InteractProgress =
 			GetWorldTimerManager().GetTimerElapsed(TH_TimedInteraction) /
-				InteractionTarget->InteractableData.InteractionDuration;
+			InteractionTarget->InteractableData.InteractionDuration;
 		HUD->GetInteractionWidget()->InteractionProgressBar->SetPercent(FMath::Clamp(InteractProgress, 0.0f, 1.0f));
 	}
 }
@@ -212,7 +212,9 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 				{
 					// end focus on the previous interactable
 					if (IsValid(InteractionTarget.GetObject()))
+					{
 						InteractionTarget->EndFocus();
+					}
 
 					// process new interactable
 					FoundInteractable(ClosestHit.GetActor());
@@ -328,7 +330,9 @@ void ACSTutorialCharacter::Aim()
 		GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 
 		if (AimingCameraTimeline)
+		{
 			AimingCameraTimeline->PlayFromStart();
+		}
 	}
 }
 
@@ -342,7 +346,9 @@ void ACSTutorialCharacter::StopAiming()
 		GetCharacterMovement()->MaxWalkSpeed = 500.f;
 
 		if (AimingCameraTimeline)
+		{
 			AimingCameraTimeline->Reverse();
+		}
 	}
 }
 
@@ -372,7 +378,7 @@ void ACSTutorialCharacter::DropItem(const TObjectPtr<UItemBase>& ItemToDrop)
 
 	const FVector SpawnLocation{GetActorLocation() + GetActorForwardVector() * 50.0f};
 	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-	
+
 	APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
 	Pickup->InitializeDrop(ItemToDrop);
 	PlayerInventory->RemoveInstanceOfItem(ItemToDrop);

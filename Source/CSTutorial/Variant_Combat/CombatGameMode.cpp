@@ -5,5 +5,4 @@
 
 ACombatGameMode::ACombatGameMode()
 {
-
 }

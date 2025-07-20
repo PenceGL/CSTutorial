@@ -19,22 +19,19 @@ class ACombatActivationVolume : public AActor
 	/** Collision box volume */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* Box;
-	
-protected:
 
+protected:
 	/** List of actors to activate when this volume is entered */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Activation Volume")
 	TArray<AActor*> ActorsToActivate;
 
-public:	
-	
+public:
 	/** Constructor */
 	ACombatActivationVolume();
 
 protected:
-
 	/** Handles overlaps with the box volume */
 	UFUNCTION()
-	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	               bool bFromSweep, const FHitResult& SweepResult);
 };

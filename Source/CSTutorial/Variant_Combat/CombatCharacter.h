@@ -42,9 +42,8 @@ class ACombatCharacter : public ACharacter, public ICombatAttacker, public IComb
 	/** Life bar widget component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, meta = (AllowPrivateAccess = "true"))
 	UWidgetComponent* LifeBar;
-	
-protected:
 
+protected:
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, Category ="Input")
 	UInputAction* JumpAction;
@@ -148,7 +147,7 @@ protected:
 
 	/** Flag that determines if the player is currently holding the charged attack input */
 	bool bIsChargingAttack = false;
-	
+
 	/** If true, the charged attack hold check has been tested at least once */
 	bool bHasLoopedChargedAttack = false;
 
@@ -174,12 +173,10 @@ protected:
 	FTransform MeshStartingTransform;
 
 public:
-	
 	/** Constructor */
 	ACombatCharacter();
 
 protected:
-
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -196,7 +193,6 @@ protected:
 	void ChargedAttackReleased();
 
 public:
-
 	/** Handles move inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoMove(float Right, float Forward);
@@ -222,7 +218,6 @@ public:
 	virtual void DoChargedAttackEnd();
 
 protected:
-
 	/** Resets the character's current HP to maximum */
 	void ResetHP();
 
@@ -235,9 +230,7 @@ protected:
 	/** Called from a delegate when the attack montage ends */
 	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
-	
 public:
-
 	// ~begin CombatAttacker interface
 
 	/** Performs the collision check for an attack */
@@ -267,16 +260,13 @@ public:
 	/** Called from the respawn timer to destroy and re-create the character */
 	void RespawnCharacter();
 
-public:
-
 	/** Overrides the default TakeDamage functionality */
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float Damage, const struct FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	/** Overrides landing to reset damage ragdoll physics */
 	virtual void Landed(const FHitResult& Hit) override;
 
 protected:
-
 	/** Blueprint handler to play damage dealt effects */
 	UFUNCTION(BlueprintImplementableEvent, Category="Combat")
 	void DealtDamage(float Damage, const FVector& ImpactPoint);
@@ -284,8 +274,6 @@ protected:
 	/** Blueprint handler to play damage received effects */
 	UFUNCTION(BlueprintImplementableEvent, Category="Combat")
 	void ReceivedDamage(float Damage, const FVector& ImpactPoint, const FVector& DamageDirection);
-
-protected:
 
 	/** Initialization */
 	virtual void BeginPlay() override;
@@ -300,7 +288,6 @@ protected:
 	virtual void NotifyControllerChanged() override;
 
 public:
-
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 

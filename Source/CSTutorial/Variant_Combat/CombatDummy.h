@@ -17,7 +17,7 @@ UCLASS(abstract)
 class ACombatDummy : public AActor, public ICombatDamageable
 {
 	GENERATED_BODY()
-	
+
 	/** Root component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Root;
@@ -34,14 +34,13 @@ class ACombatDummy : public AActor, public ICombatDamageable
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UPhysicsConstraintComponent* PhysicsConstraint;
 
-public:	
-	
+public:
 	/** Constructor */
 	ACombatDummy();
 
 	// ~Begin CombatDamageable interface
 
-		/** Handles damage and knockback events */
+	/** Handles damage and knockback events */
 	virtual void ApplyDamage(float Damage, AActor* DamageCauser, const FVector& DamageLocation, const FVector& DamageImpulse) override;
 
 	/** Handles death events */
@@ -53,7 +52,6 @@ public:
 	// ~End CombatDamageable interface
 
 protected:
-
 	/** Blueprint handle to apply damage effects */
 	UFUNCTION(BlueprintImplementableEvent, Category="Combat", meta=(DisplayName = "On Dummy Damaged"))
 	void BP_OnDummyDamaged(const FVector& Location, const FVector& Direction);

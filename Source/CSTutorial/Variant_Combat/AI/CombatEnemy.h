@@ -37,24 +37,20 @@ class ACombatEnemy : public ACharacter, public ICombatAttacker, public ICombatDa
 	UWidgetComponent* LifeBar;
 
 public:
-	
 	/** Constructor */
 	ACombatEnemy();
 
 protected:
-
 	/** Max amount of HP the character will have on respawn */
 	UPROPERTY(EditAnywhere, Category="Damage")
 	float MaxHP = 3.0f;
 
 public:
-
 	/** Current amount of HP the character has */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Damage", meta = (ClampMin = 0, ClampMax = 100))
 	float CurrentHP = 0.0f;
 
 protected:
-
 	/** Name of the pelvis bone, for damage ragdoll physics */
 	UPROPERTY(EditAnywhere, Category="Damage")
 	FName PelvisBoneName;
@@ -147,8 +143,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Events")
 	FOnEnemyDied OnEnemyDied;
 
-public:
-
 	/** Performs an AI-initiated combo attack. Number of hits will be decided by this character */
 	void DoAIComboAttack();
 
@@ -157,8 +151,6 @@ public:
 
 	/** Called from a delegate when the attack montage ends */
 	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-
-public:
 
 	// ~begin ICombatAttacker interface
 
@@ -189,25 +181,20 @@ public:
 	// ~end ICombatDamageable interface
 
 protected:
-
 	/** Removes this character from the level after it dies */
 	void RemoveFromLevel();
 
 public:
-
 	/** Overrides the default TakeDamage functionality */
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float Damage, const struct FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	/** Overrides landing to reset damage ragdoll physics */
 	virtual void Landed(const FHitResult& Hit) override;
 
 protected:
-
 	/** Blueprint handler to play damage received effects */
 	UFUNCTION(BlueprintImplementableEvent, Category="Combat")
 	void ReceivedDamage(float Damage, const FVector& ImpactPoint, const FVector& DamageDirection);
-
-protected:
 
 	/** Gameplay initialization */
 	virtual void BeginPlay() override;

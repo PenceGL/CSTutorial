@@ -19,36 +19,35 @@ class CSTUTORIAL_API UInventoryPanel : public UUserWidget
 
 public:
 	bool bIsLinkedToInventory;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UWrapBox> InventoryWrapBox;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> WeightInfo;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> CapacityInfo;
-	
+
 	UPROPERTY()
 	TObjectPtr<UInventoryComponent> InventoryReference;
 
 	UPROPERTY()
 	TObjectPtr<UInventorySubmenu> SubMenu;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventoryItemSlot> InventorySlotClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventorySubmenu> InventorySubMenuClass;
-	
+
 	UFUNCTION()
 	void RefreshInventory();
 
 	void LinkToInventory(const TObjectPtr<UInventoryComponent>& InputInventory, const TObjectPtr<ACSTutorialCharacter>& InputCharacter = nullptr);
 	void UnlinkFromInventory();
-	
-protected:
 
+protected:
 	void SetInfoText() const;
 	virtual void NativeOnInitialized() override;
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;

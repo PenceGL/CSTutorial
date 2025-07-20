@@ -15,7 +15,6 @@ class UCombatLifeBar : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	/** Sets the life bar to the provided 0-1 percentage value*/
 	UFUNCTION(BlueprintImplementableEvent, Category="LifeBar")
 	void SetLifePercentage(float Percent);

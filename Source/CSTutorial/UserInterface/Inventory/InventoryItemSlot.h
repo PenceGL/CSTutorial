@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InventoryItemSlot.generated.h"
 
+class UInventoryPanel;
 class UInventoryTooltip;
 class UInventorySubmenu;
 class UDragItemVisual;
@@ -20,18 +21,16 @@ class CSTUTORIAL_API UInventoryItemSlot : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE void SetItemReference(UItemBase* ItemIn) { ItemReference = ItemIn; };
-	FORCEINLINE UItemBase* GetItemReference() const { return ItemReference; }
-
-	FORCEINLINE void SetSubMenuReference(const TObjectPtr<UInventorySubmenu>& SubMenuIn) { SubMenuReference = SubMenuIn; }
-
-protected:
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot")
-	TObjectPtr<UItemBase> ItemReference;
+	TObjectPtr<UItemBase> InternalItemReference;
 
 	UPROPERTY()
 	TObjectPtr<UInventorySubmenu> SubMenuReference;
 
+	UPROPERTY()
+	TObjectPtr<UInventoryPanel> OwningInventoryPanel;
+
+protected:
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
 	TObjectPtr<UBorder> ItemBorder;
 
@@ -46,7 +45,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Inventory Slot")
 	TSubclassOf<UInventoryTooltip> ToolTipClass;
-
 
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;

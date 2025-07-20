@@ -3,7 +3,7 @@
 // Sets default values
 AInterfaceTestActor::AInterfaceTestActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
@@ -25,7 +25,6 @@ void AInterfaceTestActor::BeginPlay()
 void AInterfaceTestActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AInterfaceTestActor::BeginFocus()
@@ -60,4 +59,3 @@ void AInterfaceTestActor::Interact(ACSTutorialCharacter* PlayerCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Interact override on interface test actor."));
 }
-

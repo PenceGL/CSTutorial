@@ -21,7 +21,6 @@ class ICombatAttacker
 	GENERATED_BODY()
 
 public:
-
 	/** Performs an attack's collision check. Usually called from a montage's AnimNotify */
 	UFUNCTION(BlueprintCallable, Category="Attacker")
 	virtual void DoAttackTrace(FName DamageSourceBone) = 0;

@@ -152,7 +152,6 @@ void ACombatEnemy::DoAttackTrace(FName DamageSourceBone)
 
 					// pass the damage event to the actor
 					Damageable->ApplyDamage(MeleeDamage, this, CurrentHit.ImpactPoint, Impulse);
-
 				}
 			}
 		}
@@ -189,7 +188,6 @@ void ACombatEnemy::CheckChargedAttack()
 
 void ACombatEnemy::ApplyDamage(float Damage, AActor* DamageCauser, const FVector& DamageLocation, const FVector& DamageImpulse)
 {
-	
 	// pass the damage event to the actor
 	FDamageEvent DamageEvent;
 	const float ActualDamage = TakeDamage(Damage, DamageEvent, nullptr, DamageCauser);
@@ -251,7 +249,7 @@ void ACombatEnemy::RemoveFromLevel()
 	Destroy();
 }
 
-float ACombatEnemy::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float ACombatEnemy::TakeDamage(float Damage, const struct FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// only process damage if the character is still alive
 	if (CurrentHP <= 0.0f)

@@ -17,7 +17,6 @@ class CSTUTORIAL_API UDragItemVisual : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(VisibleAnywhere, Category="Drag Item Visual", meta=(BindWidget))
 	TObjectPtr<UBorder> ItemBorder;
 

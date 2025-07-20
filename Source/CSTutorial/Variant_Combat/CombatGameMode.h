@@ -13,8 +13,7 @@ UCLASS(abstract)
 class ACombatGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
-public:
 
+public:
 	ACombatGameMode();
 };

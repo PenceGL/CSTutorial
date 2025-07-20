@@ -75,4 +75,3 @@ void ACombatDamageableBox::ApplyHealing(float Healing, AActor* Healer)
 {
 	// stub
 }
-

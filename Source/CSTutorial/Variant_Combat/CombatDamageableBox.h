@@ -14,18 +14,16 @@ UCLASS(abstract)
 class ACombatDamageableBox : public AActor, public ICombatDamageable
 {
 	GENERATED_BODY()
-	
+
 	/** Damageable box mesh */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
 
-public:	
-
+public:
 	/** Constructor */
 	ACombatDamageableBox();
 
 protected:
-
 	/** Amount of HP this box starts with. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Damage")
 	float CurrentHP = 3.0f;
@@ -48,9 +46,8 @@ protected:
 	void RemoveFromLevel();
 
 public:
-
 	/** EndPlay cleanup */
-	void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 	// ~Begin CombatDamageable interface
 

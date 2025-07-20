@@ -30,14 +30,13 @@ ACombatEnemySpawner::ACombatEnemySpawner()
 void ACombatEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// should we spawn an enemy right away?
 	if (bShouldSpawnEnemiesImmediately)
 	{
 		// schedule the first enemy spawn
 		GetWorld()->GetTimerManager().SetTimer(SpawnTimer, this, &ACombatEnemySpawner::SpawnEnemy, InitialSpawnDelay);
 	}
-
 }
 
 void ACombatEnemySpawner::EndPlay(EEndPlayReason::Type EndPlayReason)

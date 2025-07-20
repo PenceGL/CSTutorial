@@ -8,7 +8,7 @@
 
 ACombatDummy::ACombatDummy()
 {
- 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// create the root
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));

@@ -21,7 +21,6 @@ class ICombatActivatable
 	GENERATED_BODY()
 
 public:
-
 	/** Toggles the Interactable Actor */
 	UFUNCTION(BlueprintCallable, Category="Activatable")
 	virtual void ToggleInteraction(AActor* ActivationInstigator) = 0;

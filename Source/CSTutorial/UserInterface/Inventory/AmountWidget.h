@@ -35,10 +35,10 @@ protected:
 	// PROPERTIES & VARIABLES
 	//#############################################################################
 	int32 AmountValue;
-	
+
 	UPROPERTY()
 	TObjectPtr<UItemBase> ItemReference;
-	
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> HeaderText;
 	UPROPERTY(meta = (BindWidget))
@@ -55,7 +55,7 @@ protected:
 	TObjectPtr<UButton> CancelButton;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> ConfirmButton;
-	
+
 	//#############################################################################
 	// FUNCTIONS
 	//#############################################################################

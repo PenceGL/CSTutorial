@@ -16,25 +16,23 @@ UCLASS(abstract)
 class ACombatLavaFloor : public AActor
 {
 	GENERATED_BODY()
-	
+
 	/** Floor mesh */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
 
 protected:
-
 	/** Amount of damage to deal on contact */
 	UPROPERTY(EditAnywhere, Category="Damage")
 	float Damage = 10000.0f;
 
-public:	
-
+public:
 	/** Constructor */
 	ACombatLavaFloor();
 
 protected:
-
 	/** Blocking hit handler */
 	UFUNCTION()
-	void OnFloorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void OnFloorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	                const FHitResult& Hit);
 };

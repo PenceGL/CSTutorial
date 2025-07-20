@@ -21,7 +21,6 @@ class ACombatAIController : public AAIController
 	UStateTreeAIComponent* StateTreeAI;
 
 public:
-
 	/** Constructor */
 	ACombatAIController();
 };

@@ -35,7 +35,7 @@ public:
 	// FUNCTIONS
 	//#############################################################################
 	FORCEINLINE bool SplitIsInProgress() const { return bSplitInProgress; };
-	
+
 	void HideSubmenuWidgets() const;
 	void ConfigureSubmenuButtons();
 
@@ -45,7 +45,7 @@ protected:
 	//#############################################################################
 	bool bSplitInProgress;
 	bool bItemCanBeSplit;
-	
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> UseButton;
 	UPROPERTY(meta = (BindWidget))
@@ -74,7 +74,7 @@ protected:
 	void SplitButtonClicked();
 	UFUNCTION()
 	void SplitConfirmed(int32 AmountToSplit);
-	
+
 	void CloseSubmenu();
 
 	virtual void NativeOnInitialized() override;

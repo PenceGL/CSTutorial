@@ -5,7 +5,8 @@
 #include "CombatAttacker.h"
 #include "Components/SkeletalMeshComponent.h"
 
-void UAnimNotify_CheckChargedAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void UAnimNotify_CheckChargedAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+                                            const FAnimNotifyEventReference& EventReference)
 {
 	// cast the owner to the attacker interface
 	if (ICombatAttacker* AttackerInterface = Cast<ICombatAttacker>(MeshComp->GetOwner()))

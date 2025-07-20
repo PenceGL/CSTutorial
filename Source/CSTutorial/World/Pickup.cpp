@@ -47,7 +47,7 @@ void APickup::InitializePickup(const int32 InQuantity)
 void APickup::InitializeDrop(const TObjectPtr<UItemBase>& ItemToDrop)
 {
 	ItemReference = UItemBase::CreateItemCopy(ItemToDrop, this);
-	PickupMesh->SetStaticMesh(ItemToDrop->AssetData.Mesh);
+	PickupMesh->SetStaticMesh(ItemReference->AssetData.Mesh);
 	UpdateInteractableData();
 }
 

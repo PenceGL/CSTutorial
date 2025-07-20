@@ -21,7 +21,7 @@ UCLASS(abstract)
 class ACombatEnemySpawner : public AActor, public ICombatActivatable
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* SpawnCapsule;
 
@@ -29,7 +29,6 @@ class ACombatEnemySpawner : public AActor, public ICombatActivatable
 	UArrowComponent* SpawnDirection;
 
 protected:
-
 	/** Type of enemy to spawn */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Enemy Spawner")
 	TSubclassOf<ACombatEnemy> EnemyClass;
@@ -64,12 +63,9 @@ protected:
 	/** Timer to spawn enemies after a delay */
 	FTimerHandle SpawnTimer;
 
-public:	
-	
+public:
 	/** Constructor */
 	ACombatEnemySpawner();
-
-public:
 
 	/** Initialization */
 	virtual void BeginPlay() override;
@@ -78,7 +74,6 @@ public:
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 protected:
-
 	/** Spawn an enemy and subscribe to its death event */
 	void SpawnEnemy();
 
@@ -90,7 +85,6 @@ protected:
 	void SpawnerDepleted();
 
 public:
-
 	// ~begin ICombatActivatable interface
 
 	/** Toggles the Spawner */
