@@ -37,7 +37,7 @@ void ACSTutorialHUD::ToggleMenu()
 {
 	if (bContainerInterfaceOpen)
 	{
-		HideContainerInterface(false);
+		HideContainerInterface();
 	}
 
 	if (bMainMenuOpen)
@@ -108,15 +108,14 @@ void ACSTutorialHUD::SetTargetContainer(const TObjectPtr<AContainer>& TargetCont
 	{
 		ContainerInterface->LinkContainerInterface(TargetContainer, PlayerCharacter);
 
-		if (!bContainerInterfaceOpen)
+		// if container interface is not open, but menu is, toggle the menu to hide it
+		if (!bContainerInterfaceOpen && bMainMenuOpen)
 		{
-			if (bMainMenuOpen)
-			{
-				ToggleMenu();
-			}
-
-			ShowContainerInterface(true);
+			ToggleMenu();
 		}
+
+		// then show the container interface
+		ShowContainerInterface(true);
 	}
 }
 
@@ -161,7 +160,7 @@ void ACSTutorialHUD::HideContainerInterface(const bool bModifyInputMode)
 
 void ACSTutorialHUD::CreateGameWidgets()
 {
-	if (MainMenuClass)
+	if (IsValid(MainMenuClass))
 	{
 		MainMenuWidget = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
 		MainMenuWidget->AddToViewport(5);
@@ -172,7 +171,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 		UE_LOG(LogTemp, Error, L"%s: MainMenuWidgetClass was null!", *FString(__FUNCTION__));
 	}
 
-	if (InteractionWidgetClass)
+	if (IsValid(InteractionWidgetClass))
 	{
 		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
 		// interaction widget doesn't need to be above menus
@@ -184,7 +183,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 		UE_LOG(LogTemp, Error, L"%s: InteractionWidgetClass was null!", *FString(__FUNCTION__));
 	}
 
-	if (CrosshairWidgetClass)
+	if (IsValid(CrosshairWidgetClass))
 	{
 		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), CrosshairWidgetClass);
 		// crosshair is conditional and always in center of screen, so it won't conflict with interaction widget
@@ -194,5 +193,18 @@ void ACSTutorialHUD::CreateGameWidgets()
 	else
 	{
 		UE_LOG(LogTemp, Error, L"%s: CrosshairWidgetClass was null!", *FString(__FUNCTION__));
+	}
+
+	if (IsValid(ContainerInterfaceClass))
+	{
+		ContainerInterface = CreateWidget<UContainerInterface>(GetWorld(), ContainerInterfaceClass);
+		ContainerInterface->AddToViewport(5);
+		ContainerInterface->SetVisibility(ESlateVisibility::Collapsed);
+		// bind the close button on the container interface to the HideContainerInterface HUD object
+		ContainerInterface->CloseContainerInterface.BindUObject(this, &ACSTutorialHUD::HideContainerInterface);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, L"%s: ContainerInterfaceClass was null!", *FString(__FUNCTION__));
 	}
 }

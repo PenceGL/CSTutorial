@@ -299,26 +299,36 @@ void ACSTutorialCharacter::Interact()
 
 	if (IsValid(InteractionTarget.GetObject()))
 	{
+		// special actions that need to occur for each interactable type
 		switch (InteractionTarget->InteractableData.InteractableType)
 		{
 		case EInteractableType::Pickup:
+			{
+			}
+			break;
 		case EInteractableType::NonPlayerCharacter:
+			{
+			}
+			break;
 		case EInteractableType::Device:
+			{
+			}
+			break;
 		case EInteractableType::Toggle:
 			{
-				InteractionTarget->Interact(this);
 			}
 			break;
 		case EInteractableType::Container:
 			{
 				HUD->SetTargetContainer(Cast<AContainer>(InteractionTarget.GetObject()), this);
-				InteractionTarget->Interact(this);
 			}
 			break;
 		default:
 			{
 			}
 		}
+
+		InteractionTarget->Interact(this);
 	}
 }
 
@@ -403,8 +413,9 @@ void ACSTutorialCharacter::DropItem(const TObjectPtr<UItemBase>& ItemToDrop)
 	PlayerInventory->RemoveInstanceOfItem(ItemToDrop);
 }
 
-void ACSTutorialCharacter::ExitContainerRadius()
+void ACSTutorialCharacter::ExitContainerRadius() const
 {
+	HUD->ClearTargetContainer();
 }
 
 void ACSTutorialCharacter::Move(const FInputActionValue& Value)

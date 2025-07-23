@@ -15,7 +15,17 @@ class CSTUTORIAL_API AContainer : public AActor, public IInteractionInterface
 	GENERATED_BODY()
 
 public:
+	//#############################################################################
+	// PROPERTIES & VARIABLES
+	//#############################################################################
+	UPROPERTY(EditInstanceOnly)
+	TObjectPtr<UInventoryComponent> ContainerInventory;
+
+	//#############################################################################
+	// FUNCTIONS
+	//#############################################################################
 	AContainer();
+	
 	virtual void BeginFocus() override;
 	virtual void EndFocus() override;
 	virtual void Interact(ACSTutorialCharacter* PlayerCharacter) override;
@@ -39,15 +49,13 @@ protected:
 	UPROPERTY()
 	TObjectPtr<ACSTutorialCharacter> PlayerCharacterReference;
 
-	UPROPERTY(EditInstanceOnly)
-	TObjectPtr<UInventoryComponent> ContainerInventory;
-
 	UPROPERTY()
 	TObjectPtr<USphereComponent> ContainerExitSphere;
 
 	UPROPERTY(EditInstanceOnly, Category = "Container | Initialization")
 	float ContainerExitRadius;
 
+	// Reminder:
 	// UPROPERTY(EditInstanceOnly, Category = "Container | Loot Initialization")
 	// TArray<TObjectPtr<UDataTable>> LootTables;
 	//

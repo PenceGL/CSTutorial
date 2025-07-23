@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-// #include "Logging/LogMacros.h"
 #include "CSTutorialCharacter.generated.h"
 
 class USpringArmComponent;
@@ -54,6 +53,8 @@ public:
 	void UpdateInteractionWidget() const;
 
 	void DropItem(const TObjectPtr<UItemBase>& ItemToDrop);
+
+	void ExitContainerRadius() const;
 
 protected:
 	//======================================================================================

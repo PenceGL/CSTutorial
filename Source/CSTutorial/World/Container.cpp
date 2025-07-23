@@ -56,6 +56,8 @@ void AContainer::Interact(ACSTutorialCharacter* PlayerCharacter)
 {
 	if (!IsValid(PlayerCharacter))
 	{
+		// when a character interacts, store a reference to them so that
+		// the container interface can then be closed via their HUD when they walk away with it open
 		if (PlayerCharacter)
 		{
 			UE_LOG(LogTemp, Log, L"%s: Successfully obtained player character reference.", *FString(__FUNCTION__))
@@ -73,6 +75,7 @@ void AContainer::OnContainerRadiusExit(UPrimitiveComponent* OverlappedComponent,
 		if (IsValid(PlayerCharacterReference))
 		{
 			PlayerCharacterReference->ExitContainerRadius();
+			PlayerCharacterReference = nullptr;
 		}
 	}
 }
