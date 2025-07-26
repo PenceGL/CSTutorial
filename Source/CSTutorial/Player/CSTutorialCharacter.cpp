@@ -353,7 +353,7 @@ void ACSTutorialCharacter::ToggleMenu()
 
 void ACSTutorialCharacter::Aim()
 {
-	if (!HUD->bMainMenuOpen)
+	if (!HUD->HasAnyMenuOpen())
 	{
 		bAiming = true;
 		bUseControllerRotationYaw = true;

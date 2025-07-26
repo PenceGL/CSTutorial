@@ -85,7 +85,7 @@ public:
 	// FUNCTIONS
 	//======================================================================================
 	UInventoryComponent();
-	
+
 	FItemAddResult HandleAddItem(const TObjectPtr<UItemBase>& InputItem);
 	UItemBase* FindMatchingItem(const TObjectPtr<UItemBase>& ItemIn) const;
 	UItemBase* FindNextItemByID(const TObjectPtr<UItemBase>& ItemIn) const;
@@ -101,7 +101,7 @@ public:
 	// getters
 	// ------------------------------
 	FORCEINLINE TArray<UItemBase*> GetInventoryContents() const { return InventoryContents; }
-	
+
 	// setters
 	// ------------------------------
 	FORCEINLINE void SetSlotsCapacity(const int32 NewSlotsCapacity) { ItemSlotCount = NewSlotsCapacity; }
@@ -124,5 +124,5 @@ protected:
 	int32 CalculateWeightAddAmount(const TObjectPtr<UItemBase>& ItemIn, int32 RequestedAddAmount) const;
 	int32 CalculateNumberForFullStack(const TObjectPtr<UItemBase>& StackableItem, int32 RequestedAddAmount) const;
 
-	void AddNewItem(const TObjectPtr<UItemBase> Item, const int32 AmountToAdd);
+	void AddNewItem(const TObjectPtr<UItemBase>& Item, const int32 AmountToAdd);
 };

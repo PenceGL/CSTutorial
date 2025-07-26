@@ -15,6 +15,11 @@ void ACSTutorialHUD::BeginPlay()
 	CreateGameWidgets();
 }
 
+bool ACSTutorialHUD::HasAnyMenuOpen() const
+{
+	return bMainMenuOpen || bContainerInterfaceOpen;
+}
+
 void ACSTutorialHUD::DisplayMenu()
 {
 	if (MainMenuWidget)

@@ -29,6 +29,8 @@ public:
 	//======================================================================================
 	ACSTutorialHUD();
 
+	bool HasAnyMenuOpen() const;
+
 	void DisplayMenu();
 	void HideMenu();
 	void ToggleMenu();

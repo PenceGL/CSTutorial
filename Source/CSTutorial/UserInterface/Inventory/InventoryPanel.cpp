@@ -9,6 +9,7 @@
 // engine
 #include "Components/TextBlock.h"
 #include "Components/WrapBox.h"
+#include "Items/ItemBase.h"
 
 void UInventoryPanel::NativeOnInitialized()
 {
@@ -141,7 +142,24 @@ bool UInventoryPanel::NativeOnDrop(const FGeometry& InGeometry,
 
 	if (ItemDragDrop->SourceItem && InventoryReference)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Detected an item drop on InventoryPanel."))
+		// if dropping an item on the same inventory, ignore the operation
+		if (ItemDragDrop->SourceItem->GetOwningInventory() != InventoryReference)
+		{
+			const FItemAddResult AddResult = InventoryReference->HandleAddItem(ItemDragDrop->SourceItem);
+
+			switch (AddResult.OperationResult)
+			{
+			case EItemAddResult::IAR_NoItemAdded:
+				break;
+
+			case EItemAddResult::IAR_PartialAmountItemAdded:
+			case EItemAddResult::IAR_AllItemAdded:
+				ItemDragDrop->SourceItem->GetOwningInventory()->RemoveAmountOfItem(ItemDragDrop->SourceItem, AddResult.ActualAmountAdded);
+				break;
+			}
+
+			return true;
+		}
 
 		// returning true will stop the drop operation at this widget
 		return true;
