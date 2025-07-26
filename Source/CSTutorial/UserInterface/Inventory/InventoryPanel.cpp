@@ -28,6 +28,7 @@ void UInventoryPanel::LinkToInventory(const TObjectPtr<UInventoryComponent>& Inp
 			SubMenu->PlayerCharacter = InputCharacter;
 			SubMenu->AddToViewport(6);
 			SubMenu->SetVisibility(ESlateVisibility::Collapsed);
+			SubMenu->LinkedInventory = InputInventory;
 		}
 		else
 		{
@@ -41,21 +42,19 @@ void UInventoryPanel::LinkToInventory(const TObjectPtr<UInventoryComponent>& Inp
 		if (this->InventoryReference != InputInventory)
 		{
 			this->InventoryReference = InputInventory;
-			SubMenu->LinkedInventory = InputInventory;
-
 			// bind the delegate so that changes in the linked inventory call RefreshInventory
 			this->InventoryReference->InventoryWasUpdated.AddUObject(this, &UInventoryPanel::RefreshInventory);
-
-			UE_LOG(LogTemp, Log, L"%s: Input inventory %s successfully linked to %s.",
-			       *FString(__FUNCTION__),
-			       *InputInventory->GetName(),
-			       *GetName());
 
 			// update the panel text and display its contents
 			SetInfoText();
 			RefreshInventory();
 
 			bIsLinkedToInventory = true;
+
+			UE_LOG(LogTemp, Log, L"%s: Input inventory %s successfully linked to %s.",
+			       *FString(__FUNCTION__),
+			       *InputInventory->GetName(),
+			       *GetName());
 		}
 		else
 		{
@@ -107,7 +106,7 @@ void UInventoryPanel::RefreshInventory()
 
 			if (IsValid(SubMenu))
 			{
-				// rely on submenu being null unless explicitly set by LinkSubmenuWidget()
+				// submenu should be null unless explicitly set by LinkSubmenuWidget()
 				ItemSlot->SubMenuReference = SubMenu;
 			}
 

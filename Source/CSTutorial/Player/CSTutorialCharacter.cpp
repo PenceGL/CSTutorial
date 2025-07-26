@@ -320,6 +320,7 @@ void ACSTutorialCharacter::Interact()
 			break;
 		case EInteractableType::Container:
 			{
+				// link the container inventory to the player container interface 
 				HUD->SetTargetContainer(Cast<AContainer>(InteractionTarget.GetObject()), this);
 			}
 			break;
