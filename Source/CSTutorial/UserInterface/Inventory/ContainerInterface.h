@@ -28,13 +28,12 @@ public:
 	FCloseContainerInterface CloseContainerInterface;
 
 	UPROPERTY()
-	TObjectPtr<AContainer> TargetContainer;
+	AContainer* TargetContainer;
 
 	//#############################################################################
 	// FUNCTIONS
 	//#############################################################################
-	void LinkContainerInterface(const TObjectPtr<AContainer>& InputContainer,
-	                            const TObjectPtr<ACSTutorialCharacter>& PlayerCharacter);
+	void LinkContainerInterface(AContainer* InputContainer, ACSTutorialCharacter* PlayerCharacter);
 	void ClearTargetContainer();
 
 	UFUNCTION()

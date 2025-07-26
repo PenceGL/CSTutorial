@@ -119,7 +119,7 @@ protected:
 	//======================================================================================
 	virtual void BeginPlay() override;
 
-	FItemAddResult HandleNonStackableItems(const TObjectPtr<UItemBase>& ItemIn);
+	FItemAddResult HandleNonStackableItems(const TObjectPtr<UItemBase>& InputItem);
 	int32 HandleStackableItems(const TObjectPtr<UItemBase>& ItemIn, int32 RequestedAddAmount);
 	int32 CalculateWeightAddAmount(const TObjectPtr<UItemBase>& ItemIn, int32 RequestedAddAmount) const;
 	int32 CalculateNumberForFullStack(const TObjectPtr<UItemBase>& StackableItem, int32 RequestedAddAmount) const;

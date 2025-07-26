@@ -106,8 +106,7 @@ void ACSTutorialHUD::UpdateInteractionWidget(const FInteractableData* Interactab
 	}
 }
 
-void ACSTutorialHUD::SetTargetContainer(const TObjectPtr<AContainer>& TargetContainer,
-                                        const TObjectPtr<ACSTutorialCharacter>& PlayerCharacter)
+void ACSTutorialHUD::SetTargetContainer(AContainer* TargetContainer, ACSTutorialCharacter* PlayerCharacter)
 {
 	if (ContainerInterface)
 	{

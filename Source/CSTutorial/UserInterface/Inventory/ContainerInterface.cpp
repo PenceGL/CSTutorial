@@ -29,13 +29,12 @@ void UContainerInterface::HideContainerInterface()
 	if (CloseContainerInterface.ExecuteIfBound(true))
 	{
 		UE_LOG(LogTemp, Log,
-			   L"%s: Closing container interface via CloseContainerInterface delegate, no references nulled.",
-			   *FString(__FUNCTION__));
+		       L"%s: Closing container interface via CloseContainerInterface delegate, no references nulled.",
+		       *FString(__FUNCTION__));
 	}
 }
 
-void UContainerInterface::LinkContainerInterface(const TObjectPtr<AContainer>& InputContainer,
-												 const TObjectPtr<ACSTutorialCharacter>& PlayerCharacter)
+void UContainerInterface::LinkContainerInterface(AContainer* InputContainer, ACSTutorialCharacter* PlayerCharacter)
 {
 	if (InputContainer && PlayerCharacter)
 	{

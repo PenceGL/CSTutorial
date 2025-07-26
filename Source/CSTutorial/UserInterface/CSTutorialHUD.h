@@ -43,7 +43,7 @@ public:
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
 	TObjectPtr<UInteractionWidget> GetInteractionWidget() { return InteractionWidget; }
 
-	void SetTargetContainer(const TObjectPtr<AContainer>& TargetContainer, const TObjectPtr<ACSTutorialCharacter>& PlayerCharacter);
+	void SetTargetContainer(AContainer* TargetContainer, ACSTutorialCharacter* PlayerCharacter);
 	void ClearTargetContainer();
 	void ShowContainerInterface(const bool bModifyInputMode = false);
 	void HideContainerInterface(const bool bModifyInputMode = false);

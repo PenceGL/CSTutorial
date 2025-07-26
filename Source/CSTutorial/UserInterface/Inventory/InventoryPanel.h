@@ -44,7 +44,7 @@ public:
 	UFUNCTION()
 	void RefreshInventory();
 
-	void LinkToInventory(const TObjectPtr<UInventoryComponent>& InputInventory, const TObjectPtr<ACSTutorialCharacter>& InputCharacter = nullptr);
+	void LinkToInventory(UInventoryComponent* InputInventory, ACSTutorialCharacter* InputCharacter = nullptr);
 	void UnlinkFromInventory();
 
 protected:

@@ -18,9 +18,10 @@ void UInventoryPanel::NativeOnInitialized()
 	bIsLinkedToInventory = false;
 }
 
-void UInventoryPanel::LinkToInventory(const TObjectPtr<UInventoryComponent>& InputInventory, const TObjectPtr<ACSTutorialCharacter>& InputCharacter)
+void UInventoryPanel::LinkToInventory(UInventoryComponent* InputInventory, ACSTutorialCharacter* InputCharacter)
 {
-	// if linked to a player, create the submenu
+	// if linked to a player
+	// create the submenu and link it to the input inventory
 	if (InputCharacter)
 	{
 		if (InventorySubMenuClass)
