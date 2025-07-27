@@ -22,20 +22,14 @@ bool ACSTutorialHUD::HasAnyMenuOpen() const
 
 void ACSTutorialHUD::DisplayMenu()
 {
-	if (MainMenuWidget)
-	{
-		bMainMenuOpen = true;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+	bMainMenuOpen = true;
+	MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void ACSTutorialHUD::HideMenu()
 {
-	if (MainMenuWidget)
-	{
-		bMainMenuOpen = false;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	bMainMenuOpen = false;
+	MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void ACSTutorialHUD::ToggleMenu()
@@ -63,64 +57,54 @@ void ACSTutorialHUD::ToggleMenu()
 
 void ACSTutorialHUD::ShowCrosshair() const
 {
-	if (IsValid(CrosshairWidget))
-	{
-		CrosshairWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+	CrosshairWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void ACSTutorialHUD::HideCrosshair() const
 {
-	if (IsValid(CrosshairWidget))
-	{
-		CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
-void ACSTutorialHUD::ShowInteractionWidget() const
+void ACSTutorialHUD::ShowInteractionWidget()
 {
-	if (IsValid(InteractionWidget))
-	{
-		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+	bInteractionWidgetVisible = true;
+	InteractionWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
-void ACSTutorialHUD::HideInteractionWidget() const
+void ACSTutorialHUD::HideInteractionWidget()
 {
-	if (IsValid(InteractionWidget))
-	{
-		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	bInteractionWidgetVisible = false;
+	InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void ACSTutorialHUD::UpdateInteractionWidget(const FInteractableData* InteractableData) const
 {
-	if (IsValid(InteractionWidget))
+	if (InteractionWidget->GetVisibility() == ESlateVisibility::Collapsed)
 	{
-		if (InteractionWidget->GetVisibility() == ESlateVisibility::Collapsed)
-		{
-			InteractionWidget->SetVisibility(ESlateVisibility::Visible);
-		}
-
-		InteractionWidget->UpdateWidget(InteractableData);
+		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
 	}
+
+	InteractionWidget->UpdateWidget(InteractableData);
 }
 
 void ACSTutorialHUD::SetTargetContainer(AContainer* TargetContainer, ACSTutorialCharacter* PlayerCharacter)
 {
-	if (ContainerInterface)
+	if (ContainerInterface->TargetContainer != TargetContainer)
 	{
 		ContainerInterface->LinkContainerInterface(TargetContainer, PlayerCharacter);
-
-		// if container interface is not open, but menu is, toggle the menu to hide it
-		if (!bContainerInterfaceOpen && bMainMenuOpen)
-		{
-			ToggleMenu();
-		}
-
-		// then show the container interface
-		ShowContainerInterface(true);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, L"%s: ContainerInterface is already linked to this container.", *FString(__FUNCTION__));
+	}
+
+	// if container interface is not open, but menu is, toggle the menu to hide it
+	if (!bContainerInterfaceOpen && bMainMenuOpen)
+	{
+		ToggleMenu();
+	}
+
+	ShowContainerInterface(true);
 }
 
 void ACSTutorialHUD::ClearTargetContainer()
@@ -131,33 +115,28 @@ void ACSTutorialHUD::ClearTargetContainer()
 
 void ACSTutorialHUD::ShowContainerInterface(const bool bModifyInputMode)
 {
-	if (ContainerInterface)
-	{
-		bContainerInterfaceOpen = true;
-		ContainerInterface->SetVisibility(ESlateVisibility::Visible);
+	bContainerInterfaceOpen = true;
+	ContainerInterface->SetVisibility(ESlateVisibility::Visible);
+	HideInteractionWidget();
 
-		if (bModifyInputMode)
-		{
-			const FInputModeGameAndUI InputMode;
-			GetOwningPlayerController()->SetInputMode(InputMode);
-			GetOwningPlayerController()->SetShowMouseCursor(true);
-		}
+	if (bModifyInputMode)
+	{
+		const FInputModeGameAndUI InputMode;
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(true);
 	}
 }
 
 void ACSTutorialHUD::HideContainerInterface(const bool bModifyInputMode)
 {
-	if (ContainerInterface)
-	{
-		bContainerInterfaceOpen = false;
-		ContainerInterface->SetVisibility(ESlateVisibility::Collapsed);
+	bContainerInterfaceOpen = false;
+	ContainerInterface->SetVisibility(ESlateVisibility::Collapsed);
 
-		if (bModifyInputMode)
-		{
-			const FInputModeGameOnly InputMode;
-			GetOwningPlayerController()->SetInputMode(InputMode);
-			GetOwningPlayerController()->SetShowMouseCursor(false);
-		}
+	if (bModifyInputMode)
+	{
+		const FInputModeGameOnly InputMode;
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(false);
 	}
 }
 

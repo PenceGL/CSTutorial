@@ -173,6 +173,8 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 		const float InteractionCheckDistance = bAiming ? AimingInteractionDistance : DefaultInteractionDistance;
 		const FVector TraceEnd{TraceStart + GetViewRotation().Vector() * InteractionCheckDistance};
 
+		// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
+
 		// draw debug sphere at the same location and size as the sweep sphere
 		// DrawDebugSphere(GetWorld(),
 		//                 TraceEnd,
@@ -220,7 +222,15 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 					FoundInteractable(ClosestHit.GetActor());
 					return;
 				}
-				// if looking at the same interactable, do nothing
+
+				// in case we opened a container, the interaction widget was hidden
+				// if looking at the same container, and the container interface has been closed
+				// show the interaction widget again
+				if (!HUD->bContainerInterfaceOpen && !HUD->bInteractionWidgetVisible)
+				{
+					HUD->ShowInteractionWidget();
+				}
+
 				return;
 			}
 		}

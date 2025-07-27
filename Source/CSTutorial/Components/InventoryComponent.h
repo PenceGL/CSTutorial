@@ -92,7 +92,7 @@ public:
 	UItemBase* FindNextPartialStack(const TObjectPtr<UItemBase>& ItemIn) const;
 	/** @brief Merges quantities of two items together that are already in the inventory.*/
 	void MergeItems(const TObjectPtr<UItemBase>& TargetItem, const TObjectPtr<UItemBase>& SourceItem);
-	void HandleRemoveItem(UItemBase* ItemToRemove, int32 AmountToRemove = 0, const bool bIsMerge = false);
+	void HandleRemoveItem(UItemBase* ItemToRemove, int32 AmountToRemove = 0, const bool bAdjustWeight = true);
 	/** @brief Used to split an existing stack. Reduces the target stack quantity and adds the split amount as a new item.*/
 	void SplitExistingStack(UItemBase* ItemIn, const int32 AmountToSplit);
 

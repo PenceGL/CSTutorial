@@ -23,6 +23,7 @@ public:
 	//======================================================================================
 	bool bMainMenuOpen;
 	bool bContainerInterfaceOpen;
+	bool bInteractionWidgetVisible;
 
 	//======================================================================================
 	// FUNCTIONS
@@ -38,8 +39,8 @@ public:
 	void ShowCrosshair() const;
 	void HideCrosshair() const;
 
-	void ShowInteractionWidget() const;
-	void HideInteractionWidget() const;
+	void ShowInteractionWidget();
+	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
 	TObjectPtr<UInteractionWidget> GetInteractionWidget() { return InteractionWidget; }
 

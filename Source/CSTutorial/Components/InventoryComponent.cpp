@@ -55,8 +55,7 @@ UItemBase* UInventoryComponent::FindNextPartialStack(const TObjectPtr<UItemBase>
 
 int32 UInventoryComponent::CalculateWeightAddAmount(const TObjectPtr<UItemBase>& ItemIn, const int32 RequestedAddAmount) const
 {
-	const int32 WeightMaxAddAmount =
-		FMath::FloorToInt((MaxWeightCapacity - InventoryTotalWeight) / ItemIn->GetItemSingleWeight());
+	const int32 WeightMaxAddAmount = FMath::FloorToInt((MaxWeightCapacity - InventoryTotalWeight) / ItemIn->GetItemSingleWeight());
 	if (WeightMaxAddAmount >= RequestedAddAmount)
 	{
 		return RequestedAddAmount;
@@ -77,14 +76,14 @@ void UInventoryComponent::MergeItems(const TObjectPtr<UItemBase>& TargetItem, co
 	if (AmountToShift > 0)
 	{
 		TargetItem->SetQuantity(TargetItem->Quantity + AmountToShift);
-		HandleRemoveItem(SourceItem, AmountToShift, true);
+		// weight isn't changing, so don't let HandleRemoveItem adjust it
+		HandleRemoveItem(SourceItem, AmountToShift, false);
 	}
 }
 
-void UInventoryComponent::HandleRemoveItem(UItemBase* ItemToRemove, const int32 AmountToRemove, const bool bIsMerge)
+void UInventoryComponent::HandleRemoveItem(UItemBase* ItemToRemove, const int32 AmountToRemove, const bool bAdjustWeight)
 {
-	if (!bIsMerge)
-		// don't remove the weight amount for merge operations
+	if (bAdjustWeight)
 		InventoryTotalWeight -= ItemToRemove->GetItemStackWeight();
 
 	if (AmountToRemove > 0)
@@ -111,11 +110,12 @@ void UInventoryComponent::SplitExistingStack(UItemBase* ItemIn, const int32 Amou
 {
 	// since you're not technically *removing* an item by splitting, the split
 	// process manipulates the inventory array directly
+
 	if (InventoryContents.Num() + 1 <= ItemSlotCount)
 	{
-		UItemBase* Splitted = UItemBase::CreateItemCopy(ItemIn, this);
-		Splitted->SetQuantity(AmountToSplit);
-		InventoryContents.Add(Splitted);
+		UItemBase* SplitPortion = UItemBase::CreateItemCopy(ItemIn, this);
+		SplitPortion->SetQuantity(AmountToSplit);
+		InventoryContents.Add(SplitPortion);
 
 		ItemIn->Quantity -= AmountToSplit;
 
