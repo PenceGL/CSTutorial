@@ -20,7 +20,7 @@ void UInventoryPanel::NativeOnInitialized()
 
 void UInventoryPanel::LinkToInventory(UInventoryComponent* InputInventory, ACSTutorialCharacter* InputCharacter)
 {
-	// if linked to a player
+	// InputCharacter is null by default, but if linking to a player then
 	// create the submenu and link it to the input inventory
 	if (InputCharacter)
 	{
@@ -155,7 +155,7 @@ bool UInventoryPanel::NativeOnDrop(const FGeometry& InGeometry,
 
 			case EItemAddResult::IAR_PartialAmountItemAdded:
 			case EItemAddResult::IAR_AllItemAdded:
-				ItemDragDrop->SourceItem->GetOwningInventory()->RemoveAmountOfItem(ItemDragDrop->SourceItem, AddResult.ActualAmountAdded);
+				ItemDragDrop->SourceItem->GetOwningInventory()->HandleRemoveItem(ItemDragDrop->SourceItem, AddResult.AmountAdded);
 				break;
 			}
 

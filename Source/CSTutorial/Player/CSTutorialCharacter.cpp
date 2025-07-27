@@ -399,7 +399,7 @@ void ACSTutorialCharacter::CameraTimelineEnd() const
 	}
 }
 
-void ACSTutorialCharacter::DropItem(const TObjectPtr<UItemBase>& ItemToDrop)
+void ACSTutorialCharacter::DropItem(UItemBase* ItemToDrop)
 {
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -411,7 +411,7 @@ void ACSTutorialCharacter::DropItem(const TObjectPtr<UItemBase>& ItemToDrop)
 
 	APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
 	Pickup->InitializeDrop(ItemToDrop);
-	PlayerInventory->RemoveInstanceOfItem(ItemToDrop);
+	PlayerInventory->HandleRemoveItem(ItemToDrop);
 }
 
 void ACSTutorialCharacter::ExitContainerRadius() const

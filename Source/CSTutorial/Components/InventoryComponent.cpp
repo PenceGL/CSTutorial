@@ -70,48 +70,56 @@ int32 UInventoryComponent::CalculateNumberForFullStack(const TObjectPtr<UItemBas
 	return FMath::Min(RequestedAddAmount, AddAmountToMakeFullStack);
 }
 
-void UInventoryComponent::RemoveInstanceOfItem(const TObjectPtr<UItemBase>& ItemToRemove)
-{
-	InventoryTotalWeight -= ItemToRemove->GetItemStackWeight();
-	InventoryContents.RemoveSingle(ItemToRemove);
-	InventoryWasUpdated.Broadcast();
-}
-
 void UInventoryComponent::MergeItems(const TObjectPtr<UItemBase>& TargetItem, const TObjectPtr<UItemBase>& SourceItem)
 {
 	const int32 AmountToShift = CalculateNumberForFullStack(TargetItem, SourceItem->Quantity);
 
-	TargetItem->SetQuantity(TargetItem->Quantity + AmountToShift);
-
-	SourceItem->SetQuantity(SourceItem->Quantity - AmountToShift);
-	if (SourceItem->Quantity <= 0)
+	if (AmountToShift > 0)
 	{
-		RemoveInstanceOfItem(SourceItem);
+		TargetItem->SetQuantity(TargetItem->Quantity + AmountToShift);
+		HandleRemoveItem(SourceItem, AmountToShift, true);
+	}
+}
+
+void UInventoryComponent::HandleRemoveItem(UItemBase* ItemToRemove, const int32 AmountToRemove, const bool bIsMerge)
+{
+	if (!bIsMerge)
+		// don't remove the weight amount for merge operations
+		InventoryTotalWeight -= ItemToRemove->GetItemStackWeight();
+
+	if (AmountToRemove > 0)
+	{
+		// adjust the quantity
+		ItemToRemove->SetQuantity(ItemToRemove->Quantity - AmountToRemove);
+
+		// if quantity is now 0, the entire item should be removed from the inventory
+		if (ItemToRemove->Quantity <= 0)
+		{
+			InventoryContents.RemoveSingle(ItemToRemove);
+		}
+	}
+	else
+	{
+		// if amount to remove is 0, assume the item entry should be removed directly
+		InventoryContents.RemoveSingle(ItemToRemove);
 	}
 
 	InventoryWasUpdated.Broadcast();
 }
 
-void UInventoryComponent::RemoveAmountOfItem(const TObjectPtr<UItemBase>& ItemIn, const int32 AmountToRemove)
+void UInventoryComponent::SplitExistingStack(UItemBase* ItemIn, const int32 AmountToSplit)
 {
-	ItemIn->SetQuantity(ItemIn->Quantity - AmountToRemove);
-	if (ItemIn->Quantity <= 0)
-	{
-		RemoveInstanceOfItem(ItemIn);
-	}
-	else
-	{
-		InventoryTotalWeight -= AmountToRemove * ItemIn->GetItemSingleWeight();
-		InventoryWasUpdated.Broadcast();
-	}
-}
-
-void UInventoryComponent::SplitExistingStack(const TObjectPtr<UItemBase>& ItemIn, const int32 AmountToSplit)
-{
+	// since you're not technically *removing* an item by splitting, the split
+	// process manipulates the inventory array directly
 	if (InventoryContents.Num() + 1 <= ItemSlotCount)
 	{
-		RemoveAmountOfItem(ItemIn, AmountToSplit);
-		AddNewItem(ItemIn, AmountToSplit);
+		UItemBase* Splitted = UItemBase::CreateItemCopy(ItemIn, this);
+		Splitted->SetQuantity(AmountToSplit);
+		InventoryContents.Add(Splitted);
+
+		ItemIn->Quantity -= AmountToSplit;
+
+		InventoryWasUpdated.Broadcast();
 	}
 }
 
@@ -173,12 +181,11 @@ int32 UInventoryComponent::HandleStackableItems(const TObjectPtr<UItemBase>& Ite
 		{
 			// adjust the existing items stack quantity and inventory total weight
 			ExistingItemStack->SetQuantity(ExistingItemStack->Quantity + WeightLimitAddAmount);
+
 			InventoryTotalWeight += (ExistingItemStack->GetItemSingleWeight() * WeightLimitAddAmount);
 
 			// adjust the count to be distributed
 			AmountToDistribute -= WeightLimitAddAmount;
-
-			ItemIn->SetQuantity(AmountToDistribute);
 
 			// if max weight capacity would be exceeded by another item, just return early
 			if (InventoryTotalWeight + ExistingItemStack->GetItemSingleWeight() > MaxWeightCapacity)
@@ -280,7 +287,7 @@ FItemAddResult UInventoryComponent::HandleAddItem(const TObjectPtr<UItemBase>& I
 			FText::FromString("Couldn't add {0} to the inventory. No remaining inventory slots, or invalid item."),
 			InputItem->TextData.Name));
 	}
-	
+
 	return FItemAddResult::AddedNone(FText::FromString("TryAddItem fallthrough error."));
 }
 

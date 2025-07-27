@@ -52,7 +52,7 @@ public:
 
 	void UpdateInteractionWidget() const;
 
-	void DropItem(const TObjectPtr<UItemBase>& ItemToDrop);
+	void DropItem(UItemBase* ItemToDrop);
 
 	void ExitContainerRadius() const;
 
