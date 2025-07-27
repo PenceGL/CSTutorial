@@ -25,8 +25,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 ACSTutorialCharacter::ACSTutorialCharacter() :
 	InteractionCheckFrequency(0.1f),
-	AimingInteractionDistance(275.0f),
-	DefaultInteractionDistance(475.0f)
+	AimingInteractionDistance(0.0f),
+	DefaultInteractionDistance(150.0f)
 {
 	// default/built-in UE game template construction code
 	//-----------------------------------------------------------------------------------
@@ -153,6 +153,7 @@ void ACSTutorialCharacter::BeginPlay()
 void ACSTutorialCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
 	if (GetWorldTimerManager().IsTimerActive(TH_TimedInteraction))
 	{
 		// percentage of completion = timer value / interaction duration
@@ -169,7 +170,7 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 	// in the 180 degree arc in front of the character
 	if (FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector()) > 0)
 	{
-		const FVector TraceStart{FollowCamera->GetComponentLocation()};
+		const FVector TraceStart{FollowCamera->GetComponentLocation() + GetViewRotation().Vector() * CameraBoom->TargetArmLength};
 		const float InteractionCheckDistance = bAiming ? AimingInteractionDistance : DefaultInteractionDistance;
 		const FVector TraceEnd{TraceStart + GetViewRotation().Vector() * InteractionCheckDistance};
 
@@ -178,7 +179,7 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 		// draw debug sphere at the same location and size as the sweep sphere
 		// DrawDebugSphere(GetWorld(),
 		//                 TraceEnd,
-		//                 70.0f,
+		//                 50.0f,
 		//                 8, FColor::Blue,
 		//                 false,
 		//                 5.0f);
@@ -189,7 +190,7 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 		                                       TraceEnd,
 		                                       FQuat::Identity,
 		                                       InteractionObjectQueryParams,
-		                                       FCollisionShape::MakeSphere(70.0f),
+		                                       FCollisionShape::MakeSphere(50.0f),
 		                                       InteractionCollisionQueryParams))
 		{
 			FHitResult ClosestHit = OutHits[0];

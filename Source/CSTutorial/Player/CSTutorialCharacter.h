@@ -121,7 +121,7 @@ protected:
 	float AimingInteractionDistance;
 
 	/** @brief Used to set the maximum distance at which actors can be interacted with while not aiming.*/
-	UPROPERTY(EditDefaultsOnly, Category = "PlayerCharacter | Interaction")
+	UPROPERTY(EditAnywhere, Category = "PlayerCharacter | Interaction")
 	float DefaultInteractionDistance;
 
 	UPROPERTY(VisibleAnywhere, Category = "PlayerCharacter | Interaction")
