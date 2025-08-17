@@ -33,7 +33,7 @@ public:
 	//#############################################################################
 	// FUNCTIONS
 	//#############################################################################
-	void LinkContainerInterface(AContainer* InputContainer, ACSTutorialCharacter* PlayerCharacter);
+	void LinkContainerInterface(AContainer* InputContainer);
 	void ClearTargetContainer();
 
 	UFUNCTION()
@@ -46,13 +46,9 @@ protected:
 	/** @brief The inventory panel that will display the container inventory contents when the container interface is open.*/
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UInventoryPanel> ContainerInventoryPanel;
-	
-	/** @brief The inventory panel that will display the characters inventory contents when the container interface is open.*/
+
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UInventoryPanel> PlayerInventoryPanel;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> ContainerName;
+	TObjectPtr<UButton> LootAllButton;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> CloseButton;

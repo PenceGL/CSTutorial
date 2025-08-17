@@ -44,7 +44,7 @@ public:
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
 	TObjectPtr<UInteractionWidget> GetInteractionWidget() { return InteractionWidget; }
 
-	void SetTargetContainer(AContainer* TargetContainer, ACSTutorialCharacter* PlayerCharacter);
+	void SetTargetContainer(AContainer* TargetContainer);
 	void ClearTargetContainer();
 	void ShowContainerInterface(const bool bModifyInputMode = false);
 	void HideContainerInterface(const bool bModifyInputMode = false);
@@ -73,9 +73,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> CrosshairWidget;
-
-	UPROPERTY()
-	TObjectPtr<UContainerInterface> ContainerInterface;
 
 	//======================================================================================
 	// FUNCTIONS

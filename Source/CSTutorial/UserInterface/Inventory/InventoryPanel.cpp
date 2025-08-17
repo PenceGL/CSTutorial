@@ -24,11 +24,12 @@ void UInventoryPanel::LinkToInventory(UInventoryComponent* InputInventory, ACSTu
 	// create the submenu and link it to the input inventory
 	if (InputCharacter)
 	{
-		if (InventorySubMenuClass)
+		// only build a submenu if it needs to be done
+		if (!IsValid(SubMenu) && IsValid(InventorySubMenuClass))
 		{
 			SubMenu = CreateWidget<UInventorySubmenu>(this, InventorySubMenuClass);
 			SubMenu->PlayerCharacter = InputCharacter;
-			SubMenu->AddToViewport(6);
+			SubMenu->AddToViewport(10);
 			SubMenu->SetVisibility(ESlateVisibility::Collapsed);
 			SubMenu->LinkedInventory = InputInventory;
 		}
@@ -41,11 +42,12 @@ void UInventoryPanel::LinkToInventory(UInventoryComponent* InputInventory, ACSTu
 	if (InputInventory)
 	{
 		// verify that the inventory reference is different from the incoming inventory
-		if (this->InventoryReference != InputInventory)
+		if (InventoryReference != InputInventory)
 		{
-			this->InventoryReference = InputInventory;
-			// bind the delegate so that changes in the linked inventory call RefreshInventory
-			this->InventoryReference->InventoryWasUpdated.AddUObject(this, &UInventoryPanel::RefreshInventory);
+			InventoryReference = InputInventory;
+			// bind the delegate if it isn't already bound so that changes in the linked inventory call RefreshInventory
+			if (!InventoryReference->InventoryWasUpdated.IsBound())
+				InventoryReference->InventoryWasUpdated.AddUObject(this, &UInventoryPanel::RefreshInventory);
 
 			// update the panel text and display its contents
 			SetInfoText();
@@ -76,20 +78,23 @@ void UInventoryPanel::LinkToInventory(UInventoryComponent* InputInventory, ACSTu
 
 void UInventoryPanel::UnlinkFromInventory()
 {
-	// removes all functions from the delegate's invocation list that are bound to the specified UserObject
-	const uint8 DelegatesRemoved = InventoryReference->InventoryWasUpdated.RemoveAll(this);
-	if (DelegatesRemoved > 0)
+	if (bIsLinkedToInventory)
 	{
-		UE_LOG(LogTemp, Warning, L"%s: %d InventoryWasUpdated delegates unbound from %s.",
-		       *FString(__FUNCTION__), DelegatesRemoved, *GetName());
-	}
+		// removes all functions from the delegate's invocation list that are bound to the specified UserObject
+		const uint8 DelegatesRemoved = InventoryReference->InventoryWasUpdated.RemoveAll(this);
+		if (DelegatesRemoved > 0)
+		{
+			UE_LOG(LogTemp, Warning, L"%s: %d InventoryWasUpdated delegates unbound from %s.",
+			       *FString(__FUNCTION__), DelegatesRemoved, *GetName());
+		}
 
-	InventoryReference = nullptr;
-	if (IsValid(SubMenu))
-	{
-		SubMenu->BeginDestroy();
+		InventoryReference = nullptr;
+		if (IsValid(SubMenu))
+		{
+			SubMenu->BeginDestroy();
+		}
+		bIsLinkedToInventory = false;
 	}
-	bIsLinkedToInventory = false;
 }
 
 void UInventoryPanel::RefreshInventory()

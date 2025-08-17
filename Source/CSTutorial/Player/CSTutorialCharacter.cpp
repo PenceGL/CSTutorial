@@ -9,7 +9,6 @@
 #include "World/Pickup.h"
 
 // engine
-#include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/TimelineComponent.h"
@@ -26,7 +25,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 ACSTutorialCharacter::ACSTutorialCharacter() :
 	InteractionCheckFrequency(0.1f),
 	AimingInteractionDistance(0.0f),
-	DefaultInteractionDistance(150.0f)
+	DefaultInteractionDistance(125.0f)
 {
 	// default/built-in UE game template construction code
 	//-----------------------------------------------------------------------------------
@@ -193,17 +192,14 @@ void ACSTutorialCharacter::PerformInteractionCheck()
 		                                       FCollisionShape::MakeSphere(50.0f),
 		                                       InteractionCollisionQueryParams))
 		{
-			FHitResult ClosestHit = OutHits[0];
-			// if more than one interactable was detected, find the closest one by iterating through all hits to find the
-			// one with the lowest distance value
-			if (OutHits.Num() > 1)
+			FHitResult ClosestHit;
+			ClosestHit.Distance = FLT_MAX;
+			// find the closest hit by iterating through all hits and checking for the lowest distance value
+			for (const FHitResult& Hit : OutHits)
 			{
-				for (const FHitResult& Hit : OutHits)
+				if (Hit.Distance < ClosestHit.Distance)
 				{
-					if (Hit.Distance < ClosestHit.Distance)
-					{
-						ClosestHit = Hit;
-					}
+					ClosestHit = Hit;
 				}
 			}
 
@@ -331,8 +327,8 @@ void ACSTutorialCharacter::Interact()
 			break;
 		case EInteractableType::Container:
 			{
-				// link the container inventory to the player container interface 
-				HUD->SetTargetContainer(Cast<AContainer>(InteractionTarget.GetObject()), this);
+				// link the container inventory to the container interface
+				HUD->SetTargetContainer(Cast<AContainer>(InteractionTarget.GetObject()));
 			}
 			break;
 		default:

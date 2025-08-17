@@ -6,7 +6,7 @@
 // engine
 #include "Components/SphereComponent.h"
 
-AContainer::AContainer() : ContainerExitRadius(225.0f)
+AContainer::AContainer() : ContainerExitRadius(250.0f)
 {
 	PrimaryActorTick.bCanEverTick = false;
 

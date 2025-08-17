@@ -16,7 +16,7 @@ void UInventorySubmenu::NativeOnInitialized()
 	if (AmountWidgetClass)
 	{
 		AmountWidget = CreateWidget<UAmountWidget>(this, AmountWidgetClass);
-		AmountWidget->AddToViewport(7);
+		AmountWidget->AddToViewport(11);
 		AmountWidget->SetVisibility(ESlateVisibility::Collapsed);
 
 		AmountWidget->OnValueConfirm.BindUObject(this, &UInventorySubmenu::SplitConfirmed);

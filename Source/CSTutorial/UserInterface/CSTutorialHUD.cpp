@@ -5,7 +5,8 @@
 
 ACSTutorialHUD::ACSTutorialHUD() :
 	bMainMenuOpen(false),
-	bContainerInterfaceOpen(false)
+	bContainerInterfaceOpen(false),
+	bInteractionWidgetVisible(false)
 {
 }
 
@@ -34,11 +35,6 @@ void ACSTutorialHUD::HideMenu()
 
 void ACSTutorialHUD::ToggleMenu()
 {
-	if (bContainerInterfaceOpen)
-	{
-		HideContainerInterface();
-	}
-
 	if (bMainMenuOpen)
 	{
 		HideMenu();
@@ -87,36 +83,35 @@ void ACSTutorialHUD::UpdateInteractionWidget(const FInteractableData* Interactab
 	InteractionWidget->UpdateWidget(InteractableData);
 }
 
-void ACSTutorialHUD::SetTargetContainer(AContainer* TargetContainer, ACSTutorialCharacter* PlayerCharacter)
+void ACSTutorialHUD::SetTargetContainer(AContainer* TargetContainer)
 {
-	if (ContainerInterface->TargetContainer != TargetContainer)
+	if (MainMenuWidget->ContainerInterface->TargetContainer != TargetContainer)
 	{
-		ContainerInterface->LinkContainerInterface(TargetContainer, PlayerCharacter);
+		MainMenuWidget->ContainerInterface->LinkContainerInterface(TargetContainer);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, L"%s: ContainerInterface is already linked to this container.", *FString(__FUNCTION__));
 	}
 
-	// if container interface is not open, but menu is, toggle the menu to hide it
-	if (!bContainerInterfaceOpen && bMainMenuOpen)
+	if (!bMainMenuOpen)
 	{
 		ToggleMenu();
 	}
-
+	
 	ShowContainerInterface(true);
 }
 
 void ACSTutorialHUD::ClearTargetContainer()
 {
 	HideContainerInterface(true);
-	ContainerInterface->ClearTargetContainer();
+	MainMenuWidget->ContainerInterface->ClearTargetContainer();
 }
 
 void ACSTutorialHUD::ShowContainerInterface(const bool bModifyInputMode)
 {
 	bContainerInterfaceOpen = true;
-	ContainerInterface->SetVisibility(ESlateVisibility::Visible);
+	MainMenuWidget->ContainerInterface->SetVisibility(ESlateVisibility::Visible);
 	HideInteractionWidget();
 
 	if (bModifyInputMode)
@@ -130,7 +125,7 @@ void ACSTutorialHUD::ShowContainerInterface(const bool bModifyInputMode)
 void ACSTutorialHUD::HideContainerInterface(const bool bModifyInputMode)
 {
 	bContainerInterfaceOpen = false;
-	ContainerInterface->SetVisibility(ESlateVisibility::Collapsed);
+	MainMenuWidget->ContainerInterface->SetVisibility(ESlateVisibility::Collapsed);
 
 	if (bModifyInputMode)
 	{
@@ -148,6 +143,7 @@ void ACSTutorialHUD::CreateGameWidgets()
 		MainMenuWidget = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
 		MainMenuWidget->AddToViewport(5);
 		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
+		MainMenuWidget->ContainerInterface->CloseContainerInterface.BindUObject(this, &ACSTutorialHUD::HideContainerInterface);
 	}
 	else
 	{
@@ -176,18 +172,5 @@ void ACSTutorialHUD::CreateGameWidgets()
 	else
 	{
 		UE_LOG(LogTemp, Error, L"%s: CrosshairWidgetClass was null!", *FString(__FUNCTION__));
-	}
-
-	if (IsValid(ContainerInterfaceClass))
-	{
-		ContainerInterface = CreateWidget<UContainerInterface>(GetWorld(), ContainerInterfaceClass);
-		ContainerInterface->AddToViewport(5);
-		ContainerInterface->SetVisibility(ESlateVisibility::Collapsed);
-		// bind the close button on the container interface to the HideContainerInterface HUD object
-		ContainerInterface->CloseContainerInterface.BindUObject(this, &ACSTutorialHUD::HideContainerInterface);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, L"%s: ContainerInterfaceClass was null!", *FString(__FUNCTION__));
 	}
 }

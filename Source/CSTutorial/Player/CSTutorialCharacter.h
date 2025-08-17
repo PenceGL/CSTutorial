@@ -47,7 +47,7 @@ public:
 	//---------------------------------------------------------
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TH_TimedInteraction); }
 
-	FORCEINLINE TObjectPtr<UInventoryComponent> GetInventory() const { return PlayerInventory; }
+	FORCEINLINE UInventoryComponent* GetInventory() const { return PlayerInventory; }
 	FORCEINLINE ACSTutorialHUD* GetHUD() const { return HUD; }
 
 	void UpdateInteractionWidget() const;
